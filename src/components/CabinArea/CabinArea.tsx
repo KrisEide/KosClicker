@@ -18,6 +18,12 @@ type CabinAreaProps = {
     xPercent: number;
     yPercent: number;
   }[];
+  activeWaffle: {
+    id: number;
+    xPercent: number;
+    yPercent: number;
+  } | null;
+  onWaffleClick: () => void;
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -28,6 +34,8 @@ export function CabinArea({
   kosPerClick,
   onCabinClick,
   autoClickers,
+  activeWaffle,
+  onWaffleClick,
 }: CabinAreaProps) {
   const [floatingKos, setFloatingKos] = useState<FloatingKos[]>([]);
 
@@ -100,6 +108,22 @@ export function CabinArea({
             <span>+{kosPerClick} Kos</span>
           </span>
         </button>
+        {activeWaffle && (
+          <button
+            className="waffle-popup"
+            type="button"
+            onClick={onWaffleClick}
+            style={{
+              left: `${activeWaffle.xPercent}%`,
+              top: `${activeWaffle.yPercent}%`,
+            }}
+            aria-label="Trykk på vaffelen"
+          >
+            <span className="waffle-popup__icon" aria-hidden="true">
+              🧇
+            </span>
+          </button>
+        )}
       </div>
     </section>
   );

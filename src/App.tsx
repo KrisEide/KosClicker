@@ -25,6 +25,12 @@ type AutoClicker = {
   yPercent: number;
 };
 
+type ActiveWaffle = {
+  id: number;
+  xPercent: number;
+  yPercent: number;
+};
+
 const WARM_CABIN_FIREPLACE_LEVEL = GAME_BALANCE.warmCabinFireplaceLevel;
 const PHASE_LENGTH_MS = GAME_BALANCE.phaseLengthMs;
 const NIGHT_BONUS = GAME_BALANCE.nightBonus;
@@ -82,6 +88,10 @@ function App() {
   const [activeEventId, setActiveEventId] = useState<EventId | null>(null);
   const [eventTimeRemaining, setEventTimeRemaining] = useState(0);
 
+  const [activeWaffle, setActiveWaffle] = useState<ActiveWaffle | null>(null);
+  const [waffleBonusTimeRemaining, setWaffleBonusTimeRemaining] = useState(0);
+  const nextWaffleIdRef = useRef(0);
+
   const [autoClickers, setAutoClickers] = useState<AutoClicker[]>([]);
   const autoClickTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const nextAutoClickerIdRef = useRef(0);
@@ -101,6 +111,7 @@ function App() {
   const coffeeLevel = getUpgradeLevel("coffee");
   const candleLevel = getUpgradeLevel("candle");
   const cabinHelperLevel = getUpgradeLevel("cabinHelper");
+  const waffleLevel = getUpgradeLevel("waffle");
   const hasUnlockedDayNight =
     candleLevel >= GAME_BALANCE.dayNightUnlockCandleLevel;
 
@@ -110,8 +121,6 @@ function App() {
   const coffeeClickBonus = GAME_BALANCE.upgrades.coffee.clickBonusPerLevel
     .slice(0, coffeeLevel)
     .reduce((total, bonus) => total + bonus, 0);
-
-  const kosPerClick = 1 + coffeeClickBonus;
 
   const cabinHelperClicksPerCycle =
     cabinHelperLevel > 0
@@ -153,8 +162,24 @@ function App() {
   const eventKosPerSecondBonus =
     (activeEventConfig?.effects.kosPerSecondBonus ?? 0) + storeWindowsRainBonus;
 
+  const waffleKosPerSecondBonus =
+    waffleBonusTimeRemaining > 0 && waffleLevel > 0
+      ? (GAME_BALANCE.upgrades.waffle.kosPerSecondBonusByLevel[
+          waffleLevel - 1
+        ] ?? 0)
+      : 0;
+
+  const waffleClickBonusPercent =
+    waffleBonusTimeRemaining > 0 && waffleLevel > 0
+      ? (GAME_BALANCE.upgrades.waffle.clickBonusDuringEffectByLevel[
+          waffleLevel - 1
+        ] ?? 0)
+      : 0;
+
   const totalKosPerSecondBonus =
-    (isNight ? NIGHT_BONUS : 0) + eventKosPerSecondBonus;
+    (isNight ? NIGHT_BONUS : 0) +
+    eventKosPerSecondBonus +
+    waffleKosPerSecondBonus;
 
   const kosPerSecond = baseKosPerSecond * (1 + totalKosPerSecondBonus);
 
@@ -190,6 +215,12 @@ function App() {
     return true;
   });
 
+  const baseKosPerClick = 1 + coffeeClickBonus;
+
+  const kosPerClick = Math.round(
+    baseKosPerClick * (1 + waffleClickBonusPercent),
+  );
+
   const visiblePermanentUpgrades = permanentUpgrades.filter((upgrade) => {
     if (upgrade.requiredCompletedEventId) {
       const hasCompletedRequiredEvent = completedEventIds.includes(
@@ -210,6 +241,20 @@ function App() {
 
   function handleCabinClick() {
     setKos((currentKos) => currentKos + kosPerClick);
+  }
+
+  function handleWaffleClick() {
+    if (!activeWaffle) return;
+
+    setKos(
+      (currentKos) => currentKos + GAME_BALANCE.upgrades.waffle.directKosReward,
+    );
+
+    setWaffleBonusTimeRemaining(
+      GAME_BALANCE.upgrades.waffle.kosPerSecondBonusDurationSeconds,
+    );
+
+    setActiveWaffle(null);
   }
 
   // BARE FOR TESTING. SKAL FJERNES ----------------------------------------
@@ -389,7 +434,7 @@ function App() {
     return () => clearTimeout(firstRainTimer);
   }, [introEventStep, activeEventId]);
 
-  // ---------------- HYTTEHJELPER
+  // ---------------- HYTTEHJELPER. Start
 
   useEffect(() => {
     if (cabinHelperLevel <= 0) return;
@@ -416,7 +461,69 @@ function App() {
     runAutoClickSequence,
   ]);
 
-  // -------------------- HYTTEHJELPER
+  // -------------------- HYTTEHJELPER. End
+
+  // -------------------- RANDOM VAFFEL TIMER. Start
+
+  useEffect(() => {
+    if (waffleLevel <= 0) return;
+    if (activeWaffle) return;
+
+    const minDelaySeconds =
+      GAME_BALANCE.upgrades.waffle.minSpawnDelaySecondsByLevel[
+        waffleLevel - 1
+      ] ?? 60;
+
+    const maxDelaySeconds =
+      GAME_BALANCE.upgrades.waffle.maxSpawnDelaySecondsByLevel[
+        waffleLevel - 1
+      ] ?? 420;
+
+    const randomDelaySeconds =
+      Math.random() * (maxDelaySeconds - minDelaySeconds) + minDelaySeconds;
+
+    const waffleSpawnTimer = setTimeout(() => {
+      setActiveWaffle({
+        id: nextWaffleIdRef.current,
+        xPercent: getRandomPercent(
+          GAME_BALANCE.upgrades.waffle.xMinPercent,
+          GAME_BALANCE.upgrades.waffle.xMaxPercent,
+        ),
+        yPercent: getRandomPercent(
+          GAME_BALANCE.upgrades.waffle.yMinPercent,
+          GAME_BALANCE.upgrades.waffle.yMaxPercent,
+        ),
+      });
+
+      nextWaffleIdRef.current += 1;
+    }, randomDelaySeconds * 1000);
+
+    return () => clearTimeout(waffleSpawnTimer);
+  }, [waffleLevel, activeWaffle]);
+
+  useEffect(() => {
+    if (!activeWaffle) return;
+
+    const waffleDespawnTimer = setTimeout(() => {
+      setActiveWaffle(null);
+    }, GAME_BALANCE.upgrades.waffle.visibleSeconds * 1000);
+
+    return () => clearTimeout(waffleDespawnTimer);
+  }, [activeWaffle]);
+
+  useEffect(() => {
+    if (waffleBonusTimeRemaining <= 0) return;
+
+    const waffleBonusTimer = setTimeout(() => {
+      setWaffleBonusTimeRemaining((currentTime) =>
+        Math.max(currentTime - 1, 0),
+      );
+    }, 1000);
+
+    return () => clearTimeout(waffleBonusTimer);
+  }, [waffleBonusTimeRemaining]);
+
+  // -------------------- RANDOM VAFFEL TIMER. End
 
   useEffect(() => {
     if (!activeEventId) return;
@@ -492,7 +599,11 @@ function App() {
     : null;
 
   return (
-    <main className={`game game--${timeOfDay}`}>
+    <main
+      className={`game game--${timeOfDay} ${
+        waffleBonusTimeRemaining > 0 ? "game--waffle-bonus" : ""
+      }`}
+    >
       <TopBar
         kos={kos}
         kosPerSecond={kosPerSecond}
@@ -514,6 +625,8 @@ function App() {
             kosPerClick={kosPerClick}
             onCabinClick={handleCabinClick}
             autoClickers={autoClickers}
+            activeWaffle={activeWaffle}
+            onWaffleClick={handleWaffleClick}
           />
 
           <CabinTraits permanentUpgrades={permanentUpgrades} />

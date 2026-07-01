@@ -252,3 +252,66 @@
     transform: translate(-50%, -54%);
   }
 }
+
+/* Vaffel effekt */
+
+.waffle-popup {
+  position: absolute;
+  z-index: 120;
+
+  width: 82px;
+  height: 82px;
+
+  transform: translate(-50%, -50%);
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+
+  animation: waffleIconPulse 2.4s ease-in-out infinite;
+}
+
+.waffle-popup::before,
+.waffle-popup::after {
+  display: none;
+  content: none;
+}
+
+.waffle-popup__icon {
+  font-size: 3.7rem;
+  line-height: 1;
+
+  filter: drop-shadow(0 0 7px rgba(255, 226, 130, 0.65))
+    drop-shadow(0 0 16px rgba(255, 169, 32, 0.42))
+    drop-shadow(0 7px 8px rgba(70, 38, 0, 0.24));
+}
+
+.waffle-popup:hover {
+  animation-duration: 1.6s;
+}
+
+.waffle-popup:hover .waffle-popup__icon {
+  filter: drop-shadow(0 0 10px rgba(255, 236, 160, 0.8))
+    drop-shadow(0 0 22px rgba(255, 169, 32, 0.58))
+    drop-shadow(0 8px 10px rgba(70, 38, 0, 0.28));
+}
+
+.waffle-popup:active {
+  transform: translate(-50%, -50%) scale(0.95);
+}
+
+@keyframes waffleIconPulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.09);
+  }
+}

@@ -89,6 +89,31 @@ export const GAME_BALANCE = {
     },
     waffle: {
       levelCosts: [300, 500, 800, 1200, 1800, 2600, 3700, 5200, 7200, 10000],
+
+      minSpawnDelaySecondsByLevel: [60, 60, 60, 60, 60, 60, 60, 60, 60, 60],
+
+      maxSpawnDelaySecondsByLevel: [
+        420, 390, 360, 330, 300, 280, 260, 250, 245, 240,
+      ],
+
+      visibleSeconds: 15,
+
+      directKosReward: 500,
+
+      kosPerSecondBonusDurationSeconds: 30,
+
+      kosPerSecondBonusByLevel: [
+        1, 1.15, 1.3, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
+      ],
+
+      clickBonusDuringEffectByLevel: [
+        1, 1.15, 1.3, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
+      ],
+
+      xMinPercent: 28,
+      xMaxPercent: 72,
+      yMinPercent: 20,
+      yMaxPercent: 62,
     },
   },
 } as const;
