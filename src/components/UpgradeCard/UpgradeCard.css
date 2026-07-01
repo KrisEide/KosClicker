@@ -1,0 +1,54 @@
+.upgrade-card {
+  min-height: 82px;
+  display: grid;
+  grid-template-columns: 58px 1fr 72px;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(24, 50, 71, 0.1);
+  background: rgba(255, 255, 255, 0.14);
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    transform 140ms ease;
+}
+
+.upgrade-card:last-child {
+  border-bottom: none;
+}
+
+.upgrade-card:hover {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.upgrade-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+}
+
+.upgrade-main h3 {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #183247;
+}
+
+.upgrade-main p {
+  margin: 4px 0 0;
+  font-size: 1rem;
+  color: #46644a;
+}
+
+.upgrade-level {
+  justify-self: end;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #46644a;
+  background: rgba(70, 100, 74, 0.1);
+}

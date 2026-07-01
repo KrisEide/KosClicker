@@ -1,0 +1,75 @@
+.cabin-traits {
+  width: min(820px, 100%);
+  box-sizing: border-box;
+
+  margin-top: -90px;
+  margin-bottom: 18px;
+
+  transform: translateX(-90px);
+
+  color: #193149;
+}
+
+.cabin-traits h2 {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+  line-height: 1;
+  font-weight: 700;
+  color: #193149;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.cabin-traits__list {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
+  gap: 10px;
+}
+
+.cabin-traits__item {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+
+  text-align: center;
+}
+
+.cabin-traits__icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+.cabin-traits__name {
+  max-width: 100%;
+
+  font-size: 0.72rem;
+  line-height: 1.05;
+  font-weight: 600;
+  color: #43586b;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.game--night .cabin-traits h2 {
+  color: #f7f2e8;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.35),
+    0 0 8px rgba(255, 214, 140, 0.08);
+}
+
+.game--night .cabin-traits__name {
+  color: #f1e7d2;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+}

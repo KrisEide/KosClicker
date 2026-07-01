@@ -1,0 +1,254 @@
+.game-area {
+  height: calc(100vh - 96px);
+  display: grid;
+  grid-template-columns: minmax(640px, 1fr) 640px;
+  gap: 32px;
+  padding: 24px 56px 20px;
+  position: relative;
+}
+
+.cabin-area {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: 100%;
+}
+
+.cabin-click-zone {
+  position: relative;
+  display: inline-block;
+  background: transparent;
+  border: none;
+  outline: none;
+
+  transform: translateY(-43px);
+}
+
+/* Selve bildet skal aldri ha ramme */
+.cabin-image {
+  width: min(820px, 100%);
+  display: block;
+  user-select: none;
+  pointer-events: none;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+/* Usynlig klikkefelt over hytta */
+.cabin-hotspot {
+  position: absolute;
+
+  /* Juster disse etter hvor hytta ligger i bildet */
+  left: 6%;
+  top: 14%;
+  width: 52%;
+  height: 62%;
+
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  appearance: none;
+  box-shadow: none;
+}
+
+/* Ingen hover-bakgrunn, ingen bevegelse */
+.cabin-hotspot:hover {
+  background: transparent;
+}
+
+.cabin-hotspot:focus {
+  outline: none;
+}
+
+.cabin-hotspot:focus-visible {
+  outline: none;
+}
+
+.floating-kos {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  transform: translate(-50%, -50%);
+  color: #fff7df;
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+
+  -webkit-text-stroke: 1px rgba(24, 50, 71, 0.85);
+  text-shadow:
+    0 2px 0 rgba(24, 50, 71, 0.9),
+    0 4px 10px rgba(24, 50, 71, 0.35);
+
+  animation: floatKos 850ms ease-out forwards;
+}
+
+@keyframes floatKos {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -20%) scale(0.9);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -120%) scale(1.05);
+  }
+}
+
+.game--night .click-text {
+  color: #fff7df;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+.game--night .click-text span {
+  color: #cfe8b8;
+}
+
+.cabin-click-zone::before {
+  content: "";
+  position: absolute;
+  inset: 14% 18% 10% 6%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 210, 122, 0.5),
+    rgba(255, 184, 77, 0.18) 45%,
+    transparent 72%
+  );
+  filter: blur(18px);
+  opacity: 0;
+  transform: scale(0.9);
+  transition:
+    opacity 3000ms ease-in-out,
+    transform 3000ms ease-in-out;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.game--night .cabin-click-zone::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.cabin-image {
+  position: relative;
+  z-index: 1;
+  transition: filter 3000ms ease-in-out;
+}
+
+.game--night .cabin-image {
+  filter: drop-shadow(0 0 26px rgba(255, 204, 102, 0.38));
+}
+
+.cabin-hotspot {
+  position: absolute;
+
+  left: 6%;
+  top: 14%;
+  width: 63%;
+  height: 62%;
+
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  appearance: none;
+  box-shadow: none;
+
+  overflow: visible;
+  z-index: 2;
+}
+
+.hotspot-label {
+  position: absolute;
+  right: 0px;
+  top: 0%;
+  transform: translateY(-50%);
+
+  z-index: 10;
+  pointer-events: none;
+
+  text-align: left;
+  white-space: nowrap;
+
+  color: #193149;
+}
+
+.hotspot-label strong {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.hotspot-label span {
+  display: block;
+  margin-top: 2px;
+  font-size: 1rem;
+  color: #46644a;
+}
+
+.game--night .hotspot-label {
+  color: #fff7df;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+.game--night .hotspot-label span {
+  color: #cfe8b8;
+}
+
+.floating-kos {
+  z-index: 3;
+}
+
+.auto-clicker {
+  position: absolute;
+  z-index: 20;
+
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+
+  opacity: 0;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+
+  animation: autoClickerFade 1400ms ease-out forwards;
+}
+
+.auto-clicker__image {
+  width: 20px;
+  height: 20px;
+  display: block;
+
+  opacity: 0.75;
+}
+
+@keyframes autoClickerFade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  18% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%);
+  }
+
+  72% {
+    opacity: 0.75;
+    transform: translate(-50%, -50%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -54%);
+  }
+}
