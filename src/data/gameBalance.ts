@@ -100,7 +100,7 @@ export const GAME_BALANCE = {
 
       directKosReward: 500,
 
-      kosPerSecondBonusDurationSeconds: 30,
+      kosPerSecondBonusDurationSeconds: 15,
 
       kosPerSecondBonusByLevel: [
         1, 1.15, 1.3, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
