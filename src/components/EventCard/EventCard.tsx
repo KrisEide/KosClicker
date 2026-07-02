@@ -22,6 +22,7 @@ type ActiveEvent = {
   title: string;
   effectText: string;
   timeRemaining: number;
+  flavorText?: string;
   duration: number;
   theme: EventTheme;
 };

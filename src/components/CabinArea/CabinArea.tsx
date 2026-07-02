@@ -24,6 +24,7 @@ type CabinAreaProps = {
     yPercent: number;
   } | null;
   onWaffleClick: () => void;
+  isWaffleHelperFrenzyActive: boolean;
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -36,6 +37,7 @@ export function CabinArea({
   autoClickers,
   activeWaffle,
   onWaffleClick,
+  isWaffleHelperFrenzyActive,
 }: CabinAreaProps) {
   const [floatingKos, setFloatingKos] = useState<FloatingKos[]>([]);
 
@@ -92,7 +94,9 @@ export function CabinArea({
           {autoClickers.map((clicker) => (
             <span
               key={clicker.id}
-              className="auto-clicker"
+              className={`auto-clicker ${
+                isWaffleHelperFrenzyActive ? "auto-clicker--waffle" : ""
+              }`}
               style={{
                 left: `${clicker.xPercent}%`,
                 top: `${clicker.yPercent}%`,

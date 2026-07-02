@@ -78,6 +78,9 @@ function App() {
     string[]
   >([]);
 
+  const hasWaffleIronAppeared =
+    delayedPermanentUpgradeIds.includes("waffleIron");
+
   const permanentUnlockTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const scheduledPermanentUnlockIdsRef = useRef<string[]>([]);
 
@@ -87,6 +90,9 @@ function App() {
 
   const [activeEventId, setActiveEventId] = useState<EventId | null>(null);
   const [eventTimeRemaining, setEventTimeRemaining] = useState(0);
+
+  const [hasStartedNeighborIntroEvent, setHasStartedNeighborIntroEvent] =
+    useState(false);
 
   const [activeWaffle, setActiveWaffle] = useState<ActiveWaffle | null>(null);
   const [waffleBonusTimeRemaining, setWaffleBonusTimeRemaining] = useState(0);
@@ -110,8 +116,34 @@ function App() {
   const fireplaceLevel = getUpgradeLevel("fireplace");
   const coffeeLevel = getUpgradeLevel("coffee");
   const candleLevel = getUpgradeLevel("candle");
+
+  const isWindowCandlesOwned = isPermanentUpgradeOwned("windowCandles");
+
+  const windowCandlesLevel = isWindowCandlesOwned
+    ? Math.max(0, candleLevel - GAME_BALANCE.upgrades.candle.baseMaxLevel)
+    : 0;
+
   const cabinHelperLevel = getUpgradeLevel("cabinHelper");
+
+  //Waffelstuff - start
   const waffleLevel = getUpgradeLevel("waffle");
+
+  const isWaffleHelperFrenzyActive =
+    waffleLevel >= 10 && cabinHelperLevel > 0 && waffleBonusTimeRemaining > 0;
+
+  const waffleHelperFrenzyActualMultiplier = isWaffleHelperFrenzyActive
+    ? (GAME_BALANCE.upgrades.waffle.helperFrenzyActualMultiplierByHelperLevel[
+        cabinHelperLevel - 1
+      ] ?? 1)
+    : 1;
+
+  const waffleHelperFrenzyVisualExtraClicks = isWaffleHelperFrenzyActive
+    ? (GAME_BALANCE.upgrades.waffle.helperFrenzyVisualExtraClicksByHelperLevel[
+        cabinHelperLevel - 1
+      ] ?? 0)
+    : 0;
+  //Waffelstuff - end
+
   const hasUnlockedDayNight =
     candleLevel >= GAME_BALANCE.dayNightUnlockCandleLevel;
 
@@ -176,8 +208,15 @@ function App() {
         ] ?? 0)
       : 0;
 
+  const currentNightBonus =
+    windowCandlesLevel > 0
+      ? (GAME_BALANCE.upgrades.candle.windowCandlesNightBonusByLevel[
+          windowCandlesLevel - 1
+        ] ?? NIGHT_BONUS)
+      : NIGHT_BONUS;
+
   const totalKosPerSecondBonus =
-    (isNight ? NIGHT_BONUS : 0) +
+    (isNight ? currentNightBonus : 0) +
     eventKosPerSecondBonus +
     waffleKosPerSecondBonus;
 
@@ -234,6 +273,16 @@ function App() {
 
     if (upgrade.unlockDelayAfterCompletedEventSeconds) {
       return delayedPermanentUpgradeIds.includes(upgrade.id);
+    }
+
+    if (upgrade.requiredUpgradeLevel) {
+      const currentUpgradeLevel = getUpgradeLevel(
+        upgrade.requiredUpgradeLevel.upgradeId,
+      );
+
+      if (currentUpgradeLevel < upgrade.requiredUpgradeLevel.level) {
+        return false;
+      }
     }
 
     return true;
@@ -357,8 +406,8 @@ function App() {
 
     setKos((currentKos) => currentKos - upgrade.cost);
 
-    setPermanentUpgrades((currentUpgrades) =>
-      currentUpgrades.map((currentUpgrade) => {
+    setPermanentUpgrades((currentPermanentUpgrades) =>
+      currentPermanentUpgrades.map((currentUpgrade) => {
         if (currentUpgrade.id !== upgradeId) {
           return currentUpgrade;
         }
@@ -369,7 +418,28 @@ function App() {
         };
       }),
     );
+
+    if (upgradeId === "windowCandles") {
+      setUpgrades((currentNormalUpgrades) =>
+        currentNormalUpgrades.map((normalUpgrade) => {
+          if (normalUpgrade.id !== "candle") return normalUpgrade;
+
+          return {
+            ...normalUpgrade,
+            maxLevel:
+              GAME_BALANCE.upgrades.candle.baseMaxLevel +
+              GAME_BALANCE.upgrades.candle.windowCandlesMaxLevel,
+            nextCost:
+              GAME_BALANCE.upgrades.candle.levelCosts[normalUpgrade.level] ??
+              normalUpgrade.nextCost,
+          };
+        }),
+      );
+    }
   }
+  // ------------------------------
+  // -----   useEffects.  -----
+  //------------------------------
 
   useEffect(() => {
     if (!hasUnlockedDayNight) return;
@@ -443,12 +513,25 @@ function App() {
 
     const helperTimer = setInterval(() => {
       const totalKosFromHelper =
-        kosPerClick * cabinHelperClickMultiplier * cabinHelperClicksPerCycle;
+        kosPerClick *
+        cabinHelperClickMultiplier *
+        cabinHelperClicksPerCycle *
+        waffleHelperFrenzyActualMultiplier;
 
-      const kosPerVisualClick =
-        totalKosFromHelper / cabinHelperVisualClicksPerCycle;
+      const visualClickCount = Math.min(
+        18,
+        Math.max(
+          1,
+          Math.round(
+            cabinHelperVisualClicksPerCycle +
+              waffleHelperFrenzyVisualExtraClicks,
+          ),
+        ),
+      );
 
-      runAutoClickSequence(cabinHelperVisualClicksPerCycle, kosPerVisualClick);
+      const kosPerVisualClick = totalKosFromHelper / visualClickCount;
+
+      runAutoClickSequence(visualClickCount, kosPerVisualClick);
     }, GAME_BALANCE.upgrades.cabinHelper.intervalMs);
 
     return () => clearInterval(helperTimer);
@@ -458,6 +541,8 @@ function App() {
     cabinHelperVisualClicksPerCycle,
     cabinHelperClickMultiplier,
     kosPerClick,
+    waffleHelperFrenzyActualMultiplier,
+    waffleHelperFrenzyVisualExtraClicks,
     runAutoClickSequence,
   ]);
 
@@ -586,17 +671,55 @@ function App() {
     });
   }, [completedEventIds, delayedPermanentUpgradeIds, permanentUpgrades]);
 
+  useEffect(() => {
+    if (!hasWaffleIronAppeared) return;
+    if (hasStartedNeighborIntroEvent) return;
+
+    const neighborIntroTimer = setTimeout(() => {
+      setActiveEventId("neighborSmallTalk");
+      setEventTimeRemaining(
+        GAME_BALANCE.events.neighborSmallTalk.durationSeconds,
+      );
+      setHasStartedNeighborIntroEvent(true);
+    }, GAME_BALANCE.events.neighborSmallTalk.firstStartDelayAfterWaffleIronAppearsSeconds * 1000);
+
+    return () => clearTimeout(neighborIntroTimer);
+  }, [hasWaffleIronAppeared, hasStartedNeighborIntroEvent]);
+
   const activeEvent = activeEventConfig
     ? {
         type: activeEventConfig.type,
         icon: activeEventConfig.icon,
         title: activeEventConfig.title,
         effectText: activeEventConfig.effectText,
+        flavorText:
+          "flavorText" in activeEventConfig
+            ? activeEventConfig.flavorText
+            : undefined,
         timeRemaining: eventTimeRemaining,
         duration: activeEventConfig.durationSeconds,
         theme: activeEventConfig.theme,
       }
     : null;
+
+  const visibleUpgradesForDisplay = visibleUpgrades.map((upgrade) => {
+    if (!upgrade.evolution) return upgrade;
+
+    const hasEvolutionUpgrade = isPermanentUpgradeOwned(
+      upgrade.evolution.permanentUpgradeId,
+    );
+
+    if (!hasEvolutionUpgrade) return upgrade;
+
+    return {
+      ...upgrade,
+      name: upgrade.evolution.name,
+      icon: upgrade.evolution.icon,
+      effectText: upgrade.evolution.effectText,
+      level: Math.max(0, upgrade.level - upgrade.evolution.levelOffset),
+      maxLevel: upgrade.evolution.maxLevel,
+    };
+  });
 
   return (
     <main
@@ -627,6 +750,7 @@ function App() {
             autoClickers={autoClickers}
             activeWaffle={activeWaffle}
             onWaffleClick={handleWaffleClick}
+            isWaffleHelperFrenzyActive={isWaffleHelperFrenzyActive}
           />
 
           <CabinTraits permanentUpgrades={permanentUpgrades} />
@@ -635,7 +759,7 @@ function App() {
         </section>
 
         <UpgradesPanel
-          upgrades={visibleUpgrades}
+          upgrades={visibleUpgradesForDisplay}
           kos={kos}
           onBuyUpgrade={handleBuyUpgrade}
           permanentUpgrades={visiblePermanentUpgrades}

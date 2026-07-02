@@ -26,4 +26,17 @@ export const permanentUpgrades: PermanentUpgrade[] = [
     unlockDelayAfterCompletedEventSeconds:
       GAME_BALANCE.permanentUpgrades.waffleIron.unlockDelayAfterRainSeconds,
   },
+  {
+    id: "windowCandles",
+    name: "Stearinlys i vinduskarmen",
+    icon: "🌙",
+    cost: GAME_BALANCE.permanentUpgrades.windowCandles.cost,
+    effectText: "Oppgraderer stearinlys og gjør nattbonusen sterkere.",
+    flavorText: "Et lite lys i vinduet gjør mørket utenfor hyggeligere.",
+    isOwned: false,
+    requiredUpgradeLevel: {
+      upgradeId: "candle",
+      level: 10,
+    },
+  },
 ];

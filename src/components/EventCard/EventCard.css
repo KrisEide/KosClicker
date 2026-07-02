@@ -51,10 +51,14 @@
   background: rgba(243, 249, 252, 0.95);
 }
 
+.event-content {
+  min-width: 0;
+}
+
 .event-content h2 {
   margin: 0;
   font-size: 1.55rem;
-  line-height: 1;
+  line-height: 1.05;
   letter-spacing: 0.03em;
 }
 
@@ -323,33 +327,4 @@
     var(--event-progress-start),
     var(--event-progress-end)
   );
-}
-
-.game--night .event-card:not(.event-card--cold) {
-  border-color: var(--event-border-color);
-
-  background:
-    radial-gradient(
-      circle at 18% 20%,
-      rgba(255, 255, 255, 0.78),
-      transparent 34%
-    ),
-    linear-gradient(180deg, var(--event-bg-top), var(--event-bg-bottom));
-}
-
-.game--night .event-card:not(.event-card--cold) .event-label {
-  color: rgba(24, 50, 72, 0.55);
-}
-
-.game--night .event-card:not(.event-card--cold) .event-content h2 {
-  color: #193149;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-
-.game--night .event-card:not(.event-card--cold) .event-effect {
-  color: var(--event-text-color);
-}
-
-.game--night .event-card:not(.event-card--cold) .event-timer {
-  color: var(--event-timer-color);
 }

@@ -31,6 +31,14 @@ export const startingUpgrades: Upgrade[] = [
     nextCost: GAME_BALANCE.upgrades.candle.levelCosts[0],
     maxLevel: 10,
     unlockStage: "afterCabinWarm",
+    evolution: {
+      permanentUpgradeId: "windowCandles",
+      name: "Stearinlys i vinduskarmen",
+      icon: "🌙🕯️",
+      effectText: "Øker Kos/sek og gjør natten sterkere.",
+      maxLevel: GAME_BALANCE.upgrades.candle.windowCandlesMaxLevel,
+      levelOffset: GAME_BALANCE.upgrades.candle.baseMaxLevel,
+    },
   },
   {
     id: "cabinHelper",

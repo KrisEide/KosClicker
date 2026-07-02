@@ -1,11 +1,13 @@
 .cabin-traits {
-  width: min(820px, 100%);
+  width: min(700px, 100%);
   box-sizing: border-box;
 
-  margin-top: -90px;
+  margin-top: -80px;
   margin-bottom: 18px;
 
-  transform: translateX(-90px);
+  padding: 0 16px;
+
+  transform: none;
 
   color: #193149;
 }
@@ -32,7 +34,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
 
   text-align: center;
 }
@@ -50,16 +51,7 @@
 }
 
 .cabin-traits__name {
-  max-width: 100%;
-
-  font-size: 0.72rem;
-  line-height: 1.05;
-  font-weight: 600;
-  color: #43586b;
-
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  display: none;
 }
 
 .game--night .cabin-traits h2 {

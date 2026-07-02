@@ -14,6 +14,14 @@ export type Upgrade = {
     level: number;
   };
   requiredPermanentUpgradeId?: string;
+  evolution?: {
+    permanentUpgradeId: string;
+    name: string;
+    icon: string;
+    effectText: string;
+    maxLevel: number;
+    levelOffset: number;
+  };
 };
 
 export type PermanentUpgrade = {
@@ -25,5 +33,9 @@ export type PermanentUpgrade = {
   isOwned: boolean;
   requiredCompletedEventId?: string;
   unlockDelayAfterCompletedEventSeconds?: number;
+  requiredUpgradeLevel?: {
+    upgradeId: string;
+    level: number;
+  };
   flavorText?: string;
 };

@@ -138,3 +138,106 @@
     filter: saturate(1.35);
   }
 }
+
+/* Andre skjermer */
+
+/* Laptop-fit: behold desktop-layout, men skaler spillet litt ned */
+@media (max-width: 1450px) and (min-width: 901px) {
+  .game {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .game-area {
+    grid-template-columns: minmax(680px, 1fr) minmax(600px, 650px);
+    gap: 32px;
+    padding: 24px 52px 20px 56px;
+
+    transform-origin: top left;
+  }
+}
+
+@media (max-width: 1450px) and (min-width: 1281px) {
+  .game-area {
+    --game-scale: 0.94;
+
+    width: calc(100% / var(--game-scale));
+    height: calc((100vh - 96px) / var(--game-scale));
+
+    transform: scale(var(--game-scale));
+  }
+}
+
+@media (max-width: 1280px) and (min-width: 1161px) {
+  .game-area {
+    --game-scale: 0.86;
+
+    width: calc(100% / var(--game-scale));
+    height: calc((100vh - 96px) / var(--game-scale));
+
+    transform: scale(var(--game-scale));
+  }
+}
+
+@media (max-width: 1160px) and (min-width: 1001px) {
+  .game-area {
+    --game-scale: 0.78;
+
+    width: calc(100% / var(--game-scale));
+    height: calc((100vh - 96px) / var(--game-scale));
+
+    transform: scale(var(--game-scale));
+  }
+}
+
+@media (max-width: 1000px) and (min-width: 901px) {
+  .game-area {
+    --game-scale: 0.7;
+
+    width: calc(100% / var(--game-scale));
+    height: calc((100vh - 96px) / var(--game-scale));
+
+    transform: scale(var(--game-scale));
+  }
+}
+
+/* Mobil / veldig liten skjerm */
+@media (max-width: 900px) {
+  .game {
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .game-area {
+    height: auto;
+    min-height: calc(100vh - 96px);
+
+    grid-template-columns: 1fr;
+    gap: 28px;
+
+    padding: 20px 18px 48px;
+
+    justify-items: center;
+
+    transform: none;
+    width: auto;
+  }
+
+  .left-side {
+    width: 100%;
+    max-width: 760px;
+    align-items: center;
+  }
+
+  .upgrades-panel {
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .event-card {
+    width: 100%;
+    max-width: 520px;
+  }
+}

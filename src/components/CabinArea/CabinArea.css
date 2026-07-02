@@ -315,3 +315,31 @@
     transform: translate(-50%, -50%) scale(1.09);
   }
 }
+
+.auto-clicker--waffle .auto-clicker__image {
+  opacity: 0.98;
+
+  filter: sepia(1) saturate(3) hue-rotate(350deg) brightness(1.45)
+    drop-shadow(0 0 7px rgba(255, 225, 105, 0.95))
+    drop-shadow(0 0 16px rgba(255, 166, 35, 0.72))
+    drop-shadow(0 4px 7px rgba(80, 45, 0, 0.32));
+}
+
+/* Mindre skjermer */
+
+@media (max-width: 1450px) {
+  .cabin-area {
+    max-width: 680px;
+    width: 100%;
+  }
+
+  .cabin-click-zone {
+    max-width: 680px;
+    width: 100%;
+  }
+
+  .cabin-image {
+    max-width: 100%;
+    height: auto;
+  }
+}

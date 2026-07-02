@@ -5,7 +5,8 @@ export const GAME_BALANCE = {
   dayNightUnlockCandleLevel: 1,
 
   // rundt 100_00 virker bra her.
-  phaseLengthMs: 110_000,
+  //Hvor lenge natt og dag fasen varer
+  phaseLengthMs: 60_000,
   nightBonus: 0.15,
 
   autoClickBurst: {
@@ -24,7 +25,7 @@ export const GAME_BALANCE = {
       title: "REGN UTE",
       icon: "🌧️",
       type: "positive",
-      durationSeconds: 30,
+      durationSeconds: 40,
       firstStartDelayAfterDaySeconds: 60,
       effectText: "+30% Kos/sek",
       effects: {
@@ -46,6 +47,34 @@ export const GAME_BALANCE = {
         nightBackgroundBottom: "rgba(32, 48, 60, 0.96)",
       },
     },
+    neighborSmallTalk: {
+      title: "NABOEN VIL SMÅPRATE",
+      icon: "🧍",
+      type: "negative",
+      durationSeconds: 65,
+      firstStartDelayAfterWaffleIronAppearsSeconds: 40,
+      effectText: "-30% Kos/sek",
+      flavorText:
+        "Naboen har sett røyk fra pipa og vil bare slå av en liten prat. Det blir aldri en liten prat.",
+      effects: {
+        kosPerSecondBonus: -0.25,
+      },
+      theme: {
+        borderColor: "rgba(130, 78, 48, 0.28)",
+        backgroundTop: "rgba(252, 237, 220, 0.97)",
+        backgroundBottom: "rgba(235, 213, 190, 0.95)",
+        iconTint: "rgba(238, 205, 172, 0.62)",
+        textColor: "rgba(118, 72, 42, 0.9)",
+        timerColor: "rgba(105, 60, 35, 0.88)",
+        progressBackground: "rgba(118, 72, 42, 0.16)",
+        progressStart: "rgba(142, 77, 43, 0.85)",
+        progressEnd: "rgba(205, 132, 74, 0.95)",
+
+        nightBorderColor: "rgba(160, 105, 68, 0.24)",
+        nightBackgroundTop: "rgba(69, 47, 36, 0.97)",
+        nightBackgroundBottom: "rgba(48, 35, 28, 0.96)",
+      },
+    },
   },
 
   // ----- PERMANENT UPGRADES -----
@@ -57,6 +86,9 @@ export const GAME_BALANCE = {
     waffleIron: {
       cost: 4000,
       unlockDelayAfterRainSeconds: 30,
+    },
+    windowCandles: {
+      cost: 10000,
     },
   },
 
@@ -74,7 +106,19 @@ export const GAME_BALANCE = {
 
     candle: {
       kosPerSecondPerLevel: 3,
-      levelCosts: [90, 140, 220, 340, 520, 800, 1200, 1800, 2700, 4000],
+
+      baseMaxLevel: 10,
+      windowCandlesMaxLevel: 10,
+
+      levelCosts: [
+        90, 140, 220, 340, 520, 800, 1200, 1800, 2700, 4000,
+
+        6000, 8500, 12000, 17000, 24000, 34000, 48000, 68000, 96000, 135000,
+      ],
+
+      windowCandlesNightBonusByLevel: [
+        0.175, 0.2, 0.225, 0.25, 0.275, 0.3, 0.325, 0.35, 0.375, 0.4,
+      ],
     },
     cabinHelper: {
       levelCosts: [250, 400, 650, 1000, 1500, 2200, 3200, 4700, 6800, 9500],
@@ -108,6 +152,14 @@ export const GAME_BALANCE = {
 
       clickBonusDuringEffectByLevel: [
         1, 1.15, 1.3, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
+      ],
+
+      helperFrenzyActualMultiplierByHelperLevel: [
+        1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 10,
+      ],
+
+      helperFrenzyVisualExtraClicksByHelperLevel: [
+        1, 2, 3, 4, 5, 6, 7, 8, 10, 12,
       ],
 
       xMinPercent: 28,
