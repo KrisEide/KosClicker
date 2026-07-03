@@ -29,10 +29,22 @@ export const startingUpgrades: Upgrade[] = [
     name: "Kaffe",
     icon: "☕",
     level: 0,
-    effectText: "Klikk gir +1 Kos.",
+    effectText: "Øker Kos per klikk.",
     nextCost: GAME_BALANCE.upgrades.coffee.levelCosts[0],
-    maxLevel: 10,
+    maxLevel: GAME_BALANCE.upgrades.coffee.baseMaxLevel,
     unlockStage: "afterCabinWarm",
+    evolution: {
+      permanentUpgradeId: "cocoa",
+      name: "Kakao",
+      icon: "🍫",
+      effectText: "Øker Kos per klikk.",
+      maxLevel: GAME_BALANCE.upgrades.coffee.cocoaMaxLevel,
+      levelOffset: GAME_BALANCE.upgrades.coffee.baseMaxLevel,
+      unlockNextCost:
+        GAME_BALANCE.upgrades.coffee.levelCosts[
+          GAME_BALANCE.upgrades.coffee.baseMaxLevel
+        ],
+    },
   },
   {
     id: "candle",

@@ -203,9 +203,17 @@ function App() {
   const isCabinCold = fireplaceLevel < WARM_CABIN_FIREPLACE_LEVEL;
   const isNight = timeOfDay === "night";
 
-  const coffeeClickBonus = GAME_BALANCE.upgrades.coffee.clickBonusPerLevel
+  const rawCoffeeClickBonus = GAME_BALANCE.upgrades.coffee.clickBonusPerLevel
     .slice(0, coffeeLevel)
     .reduce((total, bonus) => total + bonus, 0);
+
+  const coffeeClickBonusMultiplier = isPermanentUpgradeOwned("marshmallows")
+    ? GAME_BALANCE.permanentUpgrades.marshmallows.cocoaClickBonusMultiplier
+    : 1;
+
+  const coffeeClickBonus = Math.round(
+    rawCoffeeClickBonus * coffeeClickBonusMultiplier,
+  );
 
   const cabinHelperClicksPerCycle =
     cabinHelperLevel > 0

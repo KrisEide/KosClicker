@@ -45,7 +45,7 @@ export const permanentUpgrades: PermanentUpgrade[] = [
   {
     id: "largeFireplace",
     name: "Stor peis",
-    icon: "🔥🪵",
+    icon: "♨️",
     cost: GAME_BALANCE.permanentUpgrades.largeFireplace.cost,
     effectText:
       "Peis blir til Stor peis og låser opp hendelsen 'Knitrende peiskos'",
@@ -57,5 +57,32 @@ export const permanentUpgrades: PermanentUpgrade[] = [
     },
     unlocksUpgradeEvolutionId: "fireplace",
     unlocksEventId: "cracklingBirchwood",
+  },
+  {
+    id: "cocoa",
+    name: "Kakao",
+    icon: "🍫",
+    cost: GAME_BALANCE.permanentUpgrades.cocoa.cost,
+    effectText: "Kaffe blir til Kakao og kan oppgraderes videre.",
+    flavorText: "Varm kakao gjør hytta enda lunere.",
+    isOwned: false,
+    requiredUpgradeLevel: {
+      upgradeId: "coffee",
+      level: 10,
+    },
+    unlocksUpgradeEvolutionId: "coffee",
+  },
+  {
+    id: "marshmallows",
+    name: "Marshmallows",
+    icon: "☁️",
+    cost: GAME_BALANCE.permanentUpgrades.marshmallows.cost,
+    effectText: "Marshmallows gjør Kakaoens klikkbonus 50% sterkere.",
+    flavorText: "Kakaoen er endelig komplett.",
+    isOwned: false,
+    requiredUpgradeLevel: {
+      upgradeId: "coffee",
+      level: 20,
+    },
   },
 ];

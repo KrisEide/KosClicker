@@ -76,7 +76,7 @@ export const GAME_BALANCE = {
       },
     },
     cracklingBirchwood: {
-      title: "KNITRENDE BJØRKEVED",
+      title: "KNITRENDE PEISKOS",
       icon: "🪵🔥",
       type: "positive",
       durationSeconds: 20,
@@ -162,6 +162,14 @@ export const GAME_BALANCE = {
       cost: 9000,
       firstCracklingBirchwoodDelaySeconds: 45,
     },
+    cocoa: {
+      cost: 4500,
+    },
+
+    marshmallows: {
+      cost: 100000,
+      cocoaClickBonusMultiplier: 1.5,
+    },
   },
 
   // ---- NORMAL UPGRADES -----
@@ -184,8 +192,20 @@ export const GAME_BALANCE = {
     },
 
     coffee: {
-      clickBonusPerLevel: [1, 1, 1, 1, 1, 2, 2, 3, 4, 5],
-      levelCosts: [40, 60, 80, 100, 120, 170, 230, 370, 500, 1000],
+      baseMaxLevel: 10,
+      cocoaMaxLevel: 10,
+
+      clickBonusPerLevel: [
+        1, 1, 1, 1, 1, 2, 2, 3, 4, 5,
+
+        5, 6, 7, 8, 10, 12, 14, 17, 20, 25,
+      ],
+
+      levelCosts: [
+        40, 60, 80, 100, 120, 170, 230, 370, 500, 1000,
+
+        1400, 1900, 2600, 3600, 5000, 7000, 9500, 13000, 17500, 23500,
+      ],
     },
 
     candle: {
