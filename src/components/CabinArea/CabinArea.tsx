@@ -3,8 +3,6 @@ import cabinImage from "../../assets/Cabin-summer.png";
 import pointerIcon from "../../assets/pointer.png";
 import "./CabinArea.css";
 
-type EventId = keyof typeof GAME_BALANCE.events;
-
 type FloatingKos = {
   id: number;
   x: number;
