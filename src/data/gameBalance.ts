@@ -143,6 +143,89 @@ export const GAME_BALANCE = {
         nightBackgroundBottom: "rgba(48, 31, 24, 0.96)",
       },
     },
+
+    moose: {
+      title: "ELG UTENFOR",
+      icon: "🫎",
+      type: "positive",
+      durationSeconds: 45,
+      onlyAtNight: true,
+      effectText: "+25% Kos/sek",
+      effects: {
+        kosPerSecondBonus: 0.25,
+      },
+      theme: {
+        borderColor: "rgba(78, 117, 68, 0.3)",
+        backgroundTop: "rgba(234, 244, 225, 0.97)",
+        backgroundBottom: "rgba(214, 232, 202, 0.95)",
+        iconTint: "rgba(211, 232, 195, 0.62)",
+        textColor: "rgba(62, 98, 51, 0.9)",
+        timerColor: "rgba(52, 82, 43, 0.88)",
+        progressBackground: "rgba(62, 98, 51, 0.15)",
+        progressStart: "rgba(76, 124, 58, 0.88)",
+        progressEnd: "rgba(132, 176, 92, 0.95)",
+
+        nightBorderColor: "rgba(132, 176, 92, 0.26)",
+        nightBackgroundTop: "rgba(36, 55, 38, 0.97)",
+        nightBackgroundBottom: "rgba(24, 39, 29, 0.96)",
+      },
+    },
+
+    hikers: {
+      title: "TURGÅERE PÅ TOMTA",
+      icon: "🥾",
+      type: "negative",
+      durationSeconds: 30,
+      effectText: "-500 Kos, -50% Kos/sek",
+      flavorText:
+        "Noen har bestemt at den raskeste veien til stien går rett over tomta di.",
+      effects: {
+        directKosChange: -500,
+        kosPerSecondBonus: -0.5,
+      },
+      theme: {
+        borderColor: "rgba(126, 91, 58, 0.3)",
+        backgroundTop: "rgba(248, 235, 218, 0.97)",
+        backgroundBottom: "rgba(232, 211, 188, 0.95)",
+        iconTint: "rgba(230, 198, 164, 0.62)",
+        textColor: "rgba(112, 75, 43, 0.9)",
+        timerColor: "rgba(96, 62, 35, 0.88)",
+        progressBackground: "rgba(112, 75, 43, 0.16)",
+        progressStart: "rgba(135, 82, 39, 0.86)",
+        progressEnd: "rgba(197, 137, 72, 0.95)",
+
+        nightBorderColor: "rgba(176, 118, 72, 0.24)",
+        nightBackgroundTop: "rgba(70, 47, 33, 0.97)",
+        nightBackgroundBottom: "rgba(48, 35, 27, 0.96)",
+      },
+    },
+
+    flies: {
+      title: "FLUENE TAR OVER HYTTA",
+      icon: "🪰",
+      type: "negative",
+      durationSeconds: 60,
+      effectText: "-30% klikk, -30% Hyttehjelper",
+      effects: {
+        clickMultiplier: 0.7,
+        helperMultiplier: 0.7,
+      },
+      theme: {
+        borderColor: "rgba(112, 112, 50, 0.28)",
+        backgroundTop: "rgba(247, 243, 210, 0.97)",
+        backgroundBottom: "rgba(230, 224, 177, 0.95)",
+        iconTint: "rgba(230, 222, 156, 0.62)",
+        textColor: "rgba(98, 92, 38, 0.92)",
+        timerColor: "rgba(82, 77, 31, 0.88)",
+        progressBackground: "rgba(98, 92, 38, 0.16)",
+        progressStart: "rgba(128, 118, 38, 0.86)",
+        progressEnd: "rgba(198, 180, 64, 0.95)",
+
+        nightBorderColor: "rgba(175, 160, 74, 0.24)",
+        nightBackgroundTop: "rgba(62, 58, 31, 0.97)",
+        nightBackgroundBottom: "rgba(42, 40, 25, 0.96)",
+      },
+    },
   },
 
   // ----- PERMANENT UPGRADES -----

@@ -281,8 +281,13 @@ function App() {
         })()
       : 0;
 
+  const baseEventKosPerSecondBonus =
+    activeEventConfig && "kosPerSecondBonus" in activeEventConfig.effects
+      ? activeEventConfig.effects.kosPerSecondBonus
+      : 0;
+
   const eventKosPerSecondBonus =
-    (activeEventConfig?.effects.kosPerSecondBonus ?? 0) +
+    baseEventKosPerSecondBonus +
     levelBasedEventKosPerSecondBonus +
     storeWindowsRainBonus;
 
@@ -346,10 +351,18 @@ function App() {
     return true;
   });
 
+  const eventClickMultiplier =
+    activeEventConfig && "clickMultiplier" in activeEventConfig.effects
+      ? activeEventConfig.effects.clickMultiplier
+      : 1;
+
   const baseKosPerClick = 1 + coffeeClickBonus;
 
-  const kosPerClick = Math.round(
-    baseKosPerClick * (1 + waffleClickBonusPercent),
+  const kosPerClick = Math.max(
+    1,
+    Math.round(
+      baseKosPerClick * (1 + waffleClickBonusPercent) * eventClickMultiplier,
+    ),
   );
 
   const visiblePermanentUpgrades = permanentUpgrades.filter((upgrade) => {
@@ -537,9 +550,31 @@ function App() {
       );
     }
   }
-  // ------------------------------
-  // -----   useEffects.  -----
-  //------------------------------
+
+  const eventHelperMultiplier =
+    activeEventConfig && "helperMultiplier" in activeEventConfig.effects
+      ? activeEventConfig.effects.helperMultiplier
+      : 1;
+
+  function startEvent(eventId: EventId) {
+    const eventConfig = GAME_BALANCE.events[eventId];
+
+    setActiveEventId(eventId);
+    setEventTimeRemaining(getEventDurationSeconds(eventConfig));
+
+    const directKosChange =
+      "directKosChange" in eventConfig.effects
+        ? eventConfig.effects.directKosChange
+        : 0;
+
+    if (directKosChange !== 0) {
+      setKos((currentKos) => Math.max(0, currentKos + directKosChange));
+    }
+  }
+
+  // ------------------------------------------
+  // -------------  useEffects.  --------------
+  //-------------------------------------------
 
   useEffect(() => {
     if (!hasUnlockedDayNight) return;
@@ -596,8 +631,7 @@ function App() {
     if (activeEventId) return;
 
     const firstRainTimer = setTimeout(() => {
-      setActiveEventId("rain");
-      setEventTimeRemaining(GAME_BALANCE.events.rain.durationSeconds);
+      startEvent("rain");
       setIntroEventStep("done");
     }, GAME_BALANCE.events.rain.firstStartDelayAfterDaySeconds * 1000);
 
@@ -616,7 +650,8 @@ function App() {
         kosPerClick *
         cabinHelperClickMultiplier *
         cabinHelperClicksPerCycle *
-        waffleHelperFrenzyActualMultiplier;
+        waffleHelperFrenzyActualMultiplier *
+        eventHelperMultiplier;
 
       const visualClickCount = Math.min(
         18,
@@ -643,6 +678,7 @@ function App() {
     kosPerClick,
     waffleHelperFrenzyActualMultiplier,
     waffleHelperFrenzyVisualExtraClicks,
+    eventHelperMultiplier,
     runAutoClickSequence,
   ]);
 
@@ -828,10 +864,7 @@ function App() {
     if (activeEventId) return;
 
     const cracklingBirchwoodTimer = setTimeout(() => {
-      const cracklingBirchwoodEvent = GAME_BALANCE.events.cracklingBirchwood;
-
-      setActiveEventId("cracklingBirchwood");
-      setEventTimeRemaining(getEventDurationSeconds(cracklingBirchwoodEvent));
+      startEvent("cracklingBirchwood");
       setHasStartedCracklingBirchwoodIntroEvent(true);
     }, GAME_BALANCE.permanentUpgrades.largeFireplace.firstCracklingBirchwoodDelaySeconds * 1000);
 
