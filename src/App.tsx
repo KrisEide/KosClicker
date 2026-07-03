@@ -102,6 +102,11 @@ function App() {
   const autoClickTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const nextAutoClickerIdRef = useRef(0);
 
+  const [
+    hasStartedCracklingBirchwoodIntroEvent,
+    setHasStartedCracklingBirchwoodIntroEvent,
+  ] = useState(false);
+
   function getUpgradeLevel(upgradeId: string) {
     return upgrades.find((upgrade) => upgrade.id === upgradeId)?.level ?? 0;
   }
@@ -116,6 +121,54 @@ function App() {
   const fireplaceLevel = getUpgradeLevel("fireplace");
   const coffeeLevel = getUpgradeLevel("coffee");
   const candleLevel = getUpgradeLevel("candle");
+  const isLargeFireplaceOwned = isPermanentUpgradeOwned("largeFireplace");
+
+  function getEventDurationSeconds(eventConfig: typeof activeEventConfig) {
+    if (!eventConfig) return 0;
+
+    if ("durationSecondsByUpgradeLevel" in eventConfig) {
+      const durationConfig = eventConfig.durationSecondsByUpgradeLevel;
+
+      const eventUpgradeLevel = Math.max(
+        0,
+        getUpgradeLevel(durationConfig.upgradeId) -
+          (durationConfig.levelOffset ?? 0),
+      );
+
+      if (eventUpgradeLevel > 0) {
+        return (
+          durationConfig.secondsByLevel[eventUpgradeLevel - 1] ??
+          eventConfig.durationSeconds
+        );
+      }
+    }
+
+    return eventConfig.durationSeconds;
+  }
+
+  function getEventEffectText(eventConfig: typeof activeEventConfig) {
+    if (!eventConfig) return "";
+
+    if ("effectTextByUpgradeLevel" in eventConfig) {
+      const effectTextConfig = eventConfig.effectTextByUpgradeLevel;
+
+      const eventUpgradeLevel = Math.max(
+        0,
+        getUpgradeLevel(effectTextConfig.upgradeId) -
+          (effectTextConfig.levelOffset ?? 0),
+      );
+
+      if (eventUpgradeLevel > 0) {
+        const textByLevel = isNight
+          ? effectTextConfig.nightTextByLevel
+          : effectTextConfig.dayTextByLevel;
+
+        return textByLevel[eventUpgradeLevel - 1] ?? eventConfig.effectText;
+      }
+    }
+
+    return eventConfig.effectText;
+  }
 
   const isWindowCandlesOwned = isPermanentUpgradeOwned("windowCandles");
 
@@ -174,7 +227,9 @@ function App() {
       : 1;
 
   const fireplaceKosPerSecond =
-    fireplaceLevel * GAME_BALANCE.upgrades.fireplace.kosPerSecondPerLevel;
+    GAME_BALANCE.upgrades.fireplace.kosPerSecondByLevel
+      .slice(0, fireplaceLevel)
+      .reduce((total, kosPerSecond) => total + kosPerSecond, 0);
 
   const candleKosPerSecond =
     candleLevel * GAME_BALANCE.upgrades.candle.kosPerSecondPerLevel;
@@ -191,8 +246,37 @@ function App() {
           .rainKosPerSecondBonusIncrease
       : 0;
 
+  const levelBasedEventKosPerSecondBonus =
+    activeEventConfig &&
+    "kosPerSecondBonusByUpgradeLevel" in activeEventConfig.effects
+      ? (() => {
+          const levelEffect =
+            activeEventConfig.effects.kosPerSecondBonusByUpgradeLevel;
+
+          const eventUpgradeLevel = Math.max(
+            0,
+            getUpgradeLevel(levelEffect.upgradeId) -
+              (levelEffect.levelOffset ?? 0),
+          );
+
+          if (eventUpgradeLevel <= 0) return 0;
+
+          const baseBonus =
+            levelEffect.bonusByLevel[eventUpgradeLevel - 1] ?? 0;
+
+          const nightExtraBonus =
+            isNight && levelEffect.nightExtraBonusByLevel
+              ? (levelEffect.nightExtraBonusByLevel[eventUpgradeLevel - 1] ?? 0)
+              : 0;
+
+          return baseBonus + nightExtraBonus;
+        })()
+      : 0;
+
   const eventKosPerSecondBonus =
-    (activeEventConfig?.effects.kosPerSecondBonus ?? 0) + storeWindowsRainBonus;
+    (activeEventConfig?.effects.kosPerSecondBonus ?? 0) +
+    levelBasedEventKosPerSecondBonus +
+    storeWindowsRainBonus;
 
   const waffleKosPerSecondBonus =
     waffleBonusTimeRemaining > 0 && waffleLevel > 0
@@ -419,19 +503,27 @@ function App() {
       }),
     );
 
-    if (upgradeId === "windowCandles") {
+    if (upgrade.unlocksUpgradeEvolutionId) {
       setUpgrades((currentNormalUpgrades) =>
         currentNormalUpgrades.map((normalUpgrade) => {
-          if (normalUpgrade.id !== "candle") return normalUpgrade;
+          if (normalUpgrade.id !== upgrade.unlocksUpgradeEvolutionId) {
+            return normalUpgrade;
+          }
+
+          if (!normalUpgrade.evolution) {
+            return normalUpgrade;
+          }
+
+          if (normalUpgrade.evolution.permanentUpgradeId !== upgradeId) {
+            return normalUpgrade;
+          }
 
           return {
             ...normalUpgrade,
             maxLevel:
-              GAME_BALANCE.upgrades.candle.baseMaxLevel +
-              GAME_BALANCE.upgrades.candle.windowCandlesMaxLevel,
-            nextCost:
-              GAME_BALANCE.upgrades.candle.levelCosts[normalUpgrade.level] ??
-              normalUpgrade.nextCost,
+              normalUpgrade.evolution.levelOffset +
+              normalUpgrade.evolution.maxLevel,
+            nextCost: normalUpgrade.evolution.unlockNextCost,
           };
         }),
       );
@@ -691,13 +783,13 @@ function App() {
         type: activeEventConfig.type,
         icon: activeEventConfig.icon,
         title: activeEventConfig.title,
-        effectText: activeEventConfig.effectText,
+        effectText: getEventEffectText(activeEventConfig),
         flavorText:
           "flavorText" in activeEventConfig
             ? activeEventConfig.flavorText
             : undefined,
         timeRemaining: eventTimeRemaining,
-        duration: activeEventConfig.durationSeconds,
+        duration: getEventDurationSeconds(activeEventConfig),
         theme: activeEventConfig.theme,
       }
     : null;
@@ -720,6 +812,27 @@ function App() {
       maxLevel: upgrade.evolution.maxLevel,
     };
   });
+
+  //--------------------- KNITRENDE PEISKOS
+  useEffect(() => {
+    if (!isLargeFireplaceOwned) return;
+    if (hasStartedCracklingBirchwoodIntroEvent) return;
+    if (activeEventId) return;
+
+    const cracklingBirchwoodTimer = setTimeout(() => {
+      const cracklingBirchwoodEvent = GAME_BALANCE.events.cracklingBirchwood;
+
+      setActiveEventId("cracklingBirchwood");
+      setEventTimeRemaining(getEventDurationSeconds(cracklingBirchwoodEvent));
+      setHasStartedCracklingBirchwoodIntroEvent(true);
+    }, GAME_BALANCE.permanentUpgrades.largeFireplace.firstCracklingBirchwoodDelaySeconds * 1000);
+
+    return () => clearTimeout(cracklingBirchwoodTimer);
+  }, [
+    isLargeFireplaceOwned,
+    hasStartedCracklingBirchwoodIntroEvent,
+    activeEventId,
+  ]);
 
   return (
     <main

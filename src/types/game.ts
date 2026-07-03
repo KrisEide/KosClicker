@@ -21,6 +21,7 @@ export type Upgrade = {
     effectText: string;
     maxLevel: number;
     levelOffset: number;
+    unlockNextCost: number;
   };
 };
 
@@ -37,5 +38,7 @@ export type PermanentUpgrade = {
     upgradeId: string;
     level: number;
   };
+  unlocksUpgradeEvolutionId?: string;
+  unlocksEventId?: string;
   flavorText?: string;
 };

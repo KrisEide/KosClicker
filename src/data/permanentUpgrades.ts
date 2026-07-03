@@ -26,6 +26,7 @@ export const permanentUpgrades: PermanentUpgrade[] = [
     unlockDelayAfterCompletedEventSeconds:
       GAME_BALANCE.permanentUpgrades.waffleIron.unlockDelayAfterRainSeconds,
   },
+
   {
     id: "windowCandles",
     name: "Stearinlys i vinduskarmen",
@@ -38,5 +39,23 @@ export const permanentUpgrades: PermanentUpgrade[] = [
       upgradeId: "candle",
       level: 10,
     },
+    unlocksUpgradeEvolutionId: "candle",
+  },
+
+  {
+    id: "largeFireplace",
+    name: "Stor peis",
+    icon: "🔥🪵",
+    cost: GAME_BALANCE.permanentUpgrades.largeFireplace.cost,
+    effectText:
+      "Peis blir til Stor peis og låser opp hendelsen 'Knitrende peiskos'",
+    flavorText: "Det er plass til mer ved. Mye mer ved.",
+    isOwned: false,
+    requiredUpgradeLevel: {
+      upgradeId: "fireplace",
+      level: 10,
+    },
+    unlocksUpgradeEvolutionId: "fireplace",
+    unlocksEventId: "cracklingBirchwood",
   },
 ];

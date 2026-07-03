@@ -7,10 +7,22 @@ export const startingUpgrades: Upgrade[] = [
     name: "Peis",
     icon: "🔥",
     level: 0,
-    effectText: "+1 kos/sek",
+    effectText: "Gir Kos/sek.",
     nextCost: GAME_BALANCE.upgrades.fireplace.levelCosts[0],
-    maxLevel: 10,
+    maxLevel: GAME_BALANCE.upgrades.fireplace.baseMaxLevel,
     unlockStage: "start",
+    evolution: {
+      permanentUpgradeId: "largeFireplace",
+      name: "Stor peis",
+      icon: "♨️",
+      effectText: "Gir mer Kos/sek og gjør 'Knitrende peiskos' hendelse bedre.",
+      maxLevel: GAME_BALANCE.upgrades.fireplace.largeFireplaceMaxLevel,
+      levelOffset: GAME_BALANCE.upgrades.fireplace.baseMaxLevel,
+      unlockNextCost:
+        GAME_BALANCE.upgrades.fireplace.levelCosts[
+          GAME_BALANCE.upgrades.fireplace.baseMaxLevel
+        ],
+    },
   },
   {
     id: "coffee",
@@ -38,6 +50,10 @@ export const startingUpgrades: Upgrade[] = [
       effectText: "Øker Kos/sek og gjør natten sterkere.",
       maxLevel: GAME_BALANCE.upgrades.candle.windowCandlesMaxLevel,
       levelOffset: GAME_BALANCE.upgrades.candle.baseMaxLevel,
+      unlockNextCost:
+        GAME_BALANCE.upgrades.candle.levelCosts[
+          GAME_BALANCE.upgrades.candle.baseMaxLevel
+        ],
     },
   },
   {

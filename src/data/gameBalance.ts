@@ -75,6 +75,74 @@ export const GAME_BALANCE = {
         nightBackgroundBottom: "rgba(48, 35, 28, 0.96)",
       },
     },
+    cracklingBirchwood: {
+      title: "KNITRENDE BJØRKEVED",
+      icon: "🪵🔥",
+      type: "positive",
+      durationSeconds: 20,
+      effectText: "+10% Kos/sek",
+      effects: {
+        kosPerSecondBonus: 0,
+        kosPerSecondBonusByUpgradeLevel: {
+          upgradeId: "fireplace",
+          levelOffset: 10,
+          bonusByLevel: [
+            0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.2,
+          ],
+          nightExtraBonusByLevel: [
+            0.05, 0.06, 0.07, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2,
+          ],
+        },
+      },
+      durationSecondsByUpgradeLevel: {
+        upgradeId: "fireplace",
+        levelOffset: 10,
+        secondsByLevel: [20, 25, 30, 35, 40, 50, 60, 75, 90, 120],
+      },
+      effectTextByUpgradeLevel: {
+        upgradeId: "fireplace",
+        levelOffset: 10,
+        dayTextByLevel: [
+          "+10% Kos/sek",
+          "+11% Kos/sek",
+          "+12% Kos/sek",
+          "+13% Kos/sek",
+          "+14% Kos/sek",
+          "+15% Kos/sek",
+          "+16% Kos/sek",
+          "+17% Kos/sek",
+          "+18% Kos/sek",
+          "+20% Kos/sek",
+        ],
+        nightTextByLevel: [
+          "+15% Kos/sek (+5% natt)",
+          "+17% Kos/sek (+6% natt)",
+          "+19% Kos/sek (+7% natt)",
+          "+21% Kos/sek (+8% natt)",
+          "+24% Kos/sek (+10% natt)",
+          "+27% Kos/sek (+12% natt)",
+          "+30% Kos/sek (+14% natt)",
+          "+33% Kos/sek (+16% natt)",
+          "+36% Kos/sek (+18% natt)",
+          "+40% Kos/sek (+20% natt)",
+        ],
+      },
+      theme: {
+        borderColor: "rgba(176, 92, 36, 0.3)",
+        backgroundTop: "rgba(255, 239, 214, 0.98)",
+        backgroundBottom: "rgba(239, 209, 174, 0.96)",
+        iconTint: "rgba(255, 218, 158, 0.62)",
+        textColor: "rgba(126, 68, 28, 0.9)",
+        timerColor: "rgba(104, 54, 24, 0.88)",
+        progressBackground: "rgba(126, 68, 28, 0.16)",
+        progressStart: "rgba(180, 83, 32, 0.9)",
+        progressEnd: "rgba(255, 174, 74, 0.95)",
+
+        nightBorderColor: "rgba(255, 170, 80, 0.32)",
+        nightBackgroundTop: "rgba(84, 47, 28, 0.98)",
+        nightBackgroundBottom: "rgba(48, 31, 24, 0.96)",
+      },
+    },
   },
 
   // ----- PERMANENT UPGRADES -----
@@ -90,13 +158,29 @@ export const GAME_BALANCE = {
     windowCandles: {
       cost: 10000,
     },
+    largeFireplace: {
+      cost: 9000,
+      firstCracklingBirchwoodDelaySeconds: 45,
+    },
   },
 
   // ---- NORMAL UPGRADES -----
   upgrades: {
     fireplace: {
-      kosPerSecondPerLevel: 1,
-      levelCosts: [15, 25, 45, 75, 120, 190, 300, 475, 750, 1200],
+      baseMaxLevel: 10,
+      largeFireplaceMaxLevel: 10,
+
+      kosPerSecondByLevel: [
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+
+        2, 2, 2, 2, 3, 3, 3, 4, 4, 5,
+      ],
+
+      levelCosts: [
+        15, 25, 45, 75, 120, 190, 300, 475, 750, 1200,
+
+        1800, 2600, 3800, 5500, 8000, 11500, 16500, 23500, 33500, 48000,
+      ],
     },
 
     coffee: {
