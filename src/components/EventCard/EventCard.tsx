@@ -1,6 +1,8 @@
 import "./EventCard.css";
 import type { CSSProperties } from "react";
 
+import kaldtIcon from "../../assets/icons/kaldt.png";
+
 type EventTheme = {
   borderColor: string;
   backgroundTop: string;
@@ -39,7 +41,14 @@ export function EventCard({ isCabinCold, activeEvent }: EventCardProps) {
         <div className="event-label">Hyttestatus</div>
 
         <div className="event-main event-main--cold">
-          <div className="event-icon">🥶</div>
+          <span className="event-card__icon">
+            <img
+              className="event-card__icon-image event-card__icon-image--cold"
+              src={kaldtIcon}
+              alt=""
+              aria-hidden="true"
+            />
+          </span>
 
           <div className="event-content">
             <h2>Hytta er iskald</h2>

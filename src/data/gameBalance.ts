@@ -1,3 +1,5 @@
+import type { GameEvent } from "../types/game";
+
 export const GAME_BALANCE = {
   debugKosAmount: 1000,
 
@@ -6,7 +8,7 @@ export const GAME_BALANCE = {
 
   // rundt 100_00 virker bra her.
   //Hvor lenge natt og dag fasen varer
-  phaseLengthMs: 60_000,
+  phaseLengthMs: 100_000,
   nightBonus: 0.15,
 
   autoClickBurst: {
@@ -20,13 +22,20 @@ export const GAME_BALANCE = {
     yMaxPercent: 90,
   },
 
+  randomEvents: {
+    minDelaySeconds: 60,
+    maxDelaySeconds: 130,
+  },
+
   events: {
     rain: {
+      //Større vinduer øker % effekten her.
       title: "REGN UTE",
       icon: "🌧️",
       type: "positive",
-      durationSeconds: 40,
-      firstStartDelayAfterDaySeconds: 60,
+      randomWeight: 35,
+      durationSeconds: 70,
+      firstStartDelayAfterDaySeconds: 10,
       effectText: "+30% Kos/sek",
       effects: {
         kosPerSecondBonus: 0.3,
@@ -51,13 +60,26 @@ export const GAME_BALANCE = {
       title: "NABOEN VIL SMÅPRATE",
       icon: "🧍",
       type: "negative",
-      durationSeconds: 65,
-      firstStartDelayAfterWaffleIronAppearsSeconds: 40,
-      effectText: "-30% Kos/sek",
+      randomWeight: 18,
+      randomWeightOverrides: [
+        {
+          permanentUpgradeId: "screeningHedge",
+          randomWeight: 10,
+        },
+      ],
+      durationSeconds: 40,
+      durationSecondsOverrides: [
+        {
+          permanentUpgradeId: "screeningHedge",
+          durationSeconds: 25,
+        },
+      ],
+      firstStartDelayAfterWaffleIronAppearsSeconds: 20,
+      effectText: "-100% Kos/sek",
       flavorText:
         "Naboen har sett røyk fra pipa og vil bare slå av en liten prat. Det blir aldri en liten prat.",
       effects: {
-        kosPerSecondBonus: -0.25,
+        kosPerSecondBonus: -1,
       },
       theme: {
         borderColor: "rgba(130, 78, 48, 0.28)",
@@ -77,9 +99,11 @@ export const GAME_BALANCE = {
     },
     cracklingBirchwood: {
       title: "KNITRENDE PEISKOS",
-      icon: "🪵🔥",
+      icon: "💥",
       type: "positive",
-      durationSeconds: 20,
+      randomWeight: 18,
+      requiredPermanentUpgradeId: "largeFireplace",
+      durationSeconds: 30,
       effectText: "+10% Kos/sek",
       effects: {
         kosPerSecondBonus: 0,
@@ -145,14 +169,16 @@ export const GAME_BALANCE = {
     },
 
     moose: {
-      title: "ELG UTENFOR",
+      title: "ELG UTENFOR HYTTA",
       icon: "🫎",
       type: "positive",
-      durationSeconds: 45,
+      randomWeight: 7,
+
+      durationSeconds: 40,
       onlyAtNight: true,
-      effectText: "+25% Kos/sek",
+      effectText: "+70% Kos/sek",
       effects: {
-        kosPerSecondBonus: 0.25,
+        kosPerSecondBonus: 0.7,
       },
       theme: {
         borderColor: "rgba(78, 117, 68, 0.3)",
@@ -175,13 +201,14 @@ export const GAME_BALANCE = {
       title: "TURGÅERE PÅ TOMTA",
       icon: "🥾",
       type: "negative",
+      randomWeight: 12,
       durationSeconds: 30,
       effectText: "-500 Kos, -50% Kos/sek",
       flavorText:
         "Noen har bestemt at den raskeste veien til stien går rett over tomta di.",
       effects: {
         directKosChange: -500,
-        kosPerSecondBonus: -0.5,
+        kosPerSecondBonus: -0.75,
       },
       theme: {
         borderColor: "rgba(126, 91, 58, 0.3)",
@@ -204,11 +231,12 @@ export const GAME_BALANCE = {
       title: "FLUENE TAR OVER HYTTA",
       icon: "🪰",
       type: "negative",
+      randomWeight: 18,
       durationSeconds: 60,
-      effectText: "-30% klikk, -30% Hyttehjelper",
+      effectText: "-60% klikk, -60% Hyttehjelper",
       effects: {
-        clickMultiplier: 0.7,
-        helperMultiplier: 0.7,
+        clickMultiplier: 0.4,
+        helperMultiplier: 0.4,
       },
       theme: {
         borderColor: "rgba(112, 112, 50, 0.28)",
@@ -226,31 +254,38 @@ export const GAME_BALANCE = {
         nightBackgroundBottom: "rgba(42, 40, 25, 0.96)",
       },
     },
-  },
+  } satisfies Record<string, GameEvent>,
 
   // ----- PERMANENT UPGRADES -----
   permanentUpgrades: {
     storeWindows: {
-      cost: 12000,
+      cost: 18000,
       rainKosPerSecondBonusIncrease: 0.3,
     },
+
     waffleIron: {
-      cost: 4000,
-      unlockDelayAfterRainSeconds: 30,
+      cost: 6000,
+      unlockDelayAfterRainSeconds: 15,
     },
-    windowCandles: {
-      cost: 10000,
-    },
-    largeFireplace: {
+
+    screeningHedge: {
       cost: 9000,
-      firstCracklingBirchwoodDelaySeconds: 45,
     },
+
+    windowCandles: {
+      cost: 25000,
+    },
+
+    largeFireplace: {
+      cost: 35000,
+    },
+
     cocoa: {
-      cost: 4500,
+      cost: 22000,
     },
 
     marshmallows: {
-      cost: 100000,
+      cost: 150000,
       cocoaClickBonusMultiplier: 1.5,
     },
   },
@@ -264,13 +299,13 @@ export const GAME_BALANCE = {
       kosPerSecondByLevel: [
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
-        2, 2, 2, 2, 3, 3, 3, 4, 4, 5,
+        2, 2, 3, 3, 4, 4, 5, 6, 7, 8,
       ],
 
       levelCosts: [
-        15, 25, 45, 75, 120, 190, 300, 475, 750, 1200,
+        15, 25, 45, 80, 130, 210, 340, 550, 900, 1500,
 
-        1800, 2600, 3800, 5500, 8000, 11500, 16500, 23500, 33500, 48000,
+        3500, 5000, 7200, 10500, 15500, 23000, 34000, 50000, 75000, 110000,
       ],
     },
 
@@ -279,15 +314,15 @@ export const GAME_BALANCE = {
       cocoaMaxLevel: 10,
 
       clickBonusPerLevel: [
-        1, 1, 1, 1, 1, 2, 2, 3, 4, 5,
+        1, 1, 1, 1, 2, 2, 3, 4, 5, 6,
 
-        5, 6, 7, 8, 10, 12, 14, 17, 20, 25,
+        6, 7, 8, 10, 12, 15, 18, 22, 27, 34,
       ],
 
       levelCosts: [
-        40, 60, 80, 100, 120, 170, 230, 370, 500, 1000,
+        40, 70, 110, 180, 280, 450, 700, 1100, 1700, 2600,
 
-        1400, 1900, 2600, 3600, 5000, 7000, 9500, 13000, 17500, 23500,
+        4500, 6500, 9000, 13000, 18500, 26500, 38000, 55000, 80000, 115000,
       ],
     },
 
@@ -298,9 +333,9 @@ export const GAME_BALANCE = {
       windowCandlesMaxLevel: 10,
 
       levelCosts: [
-        90, 140, 220, 340, 520, 800, 1200, 1800, 2700, 4000,
+        90, 150, 250, 420, 700, 1100, 1700, 2600, 4000, 6000,
 
-        6000, 8500, 12000, 17000, 24000, 34000, 48000, 68000, 96000, 135000,
+        9000, 13000, 19000, 28000, 41000, 60000, 88000, 130000, 190000, 280000,
       ],
 
       windowCandlesNightBonusByLevel: [
@@ -308,7 +343,9 @@ export const GAME_BALANCE = {
       ],
     },
     cabinHelper: {
-      levelCosts: [250, 400, 650, 1000, 1500, 2200, 3200, 4700, 6800, 9500],
+      levelCosts: [
+        400, 750, 1300, 2200, 3600, 6000, 10000, 17000, 29000, 50000,
+      ],
 
       intervalMs: 2_000,
 
@@ -319,7 +356,9 @@ export const GAME_BALANCE = {
       level10ClickMultiplier: 2,
     },
     waffle: {
-      levelCosts: [300, 500, 800, 1200, 1800, 2600, 3700, 5200, 7200, 10000],
+      levelCosts: [
+        700, 1100, 1700, 2600, 4000, 6500, 10500, 17000, 27000, 43000,
+      ],
 
       minSpawnDelaySecondsByLevel: [60, 60, 60, 60, 60, 60, 60, 60, 60, 60],
 
@@ -342,7 +381,7 @@ export const GAME_BALANCE = {
       ],
 
       helperFrenzyActualMultiplierByHelperLevel: [
-        1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 10,
+        1.1, 1.15, 1.2, 1.25, 1.35, 1.45, 1.6, 1.8, 2, 2.5,
       ],
 
       helperFrenzyVisualExtraClicksByHelperLevel: [

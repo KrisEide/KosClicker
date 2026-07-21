@@ -1,7 +1,6 @@
 .upgrades-panel {
-  width: min(34vw, 520px);
-  min-width: 390px;
-  max-width: 520px;
+  width: 100%;
+  max-width: 650px;
 
   align-self: flex-start;
 
@@ -15,12 +14,23 @@
   box-shadow: none;
 
   color: #193149;
+
+  position: relative;
+  overflow: visible;
 }
 
+/* ---------------- Seksjoner ---------------- */
+
 .menu-section {
+  position: relative;
+  z-index: 1;
+
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  margin-bottom: 26px;
+  overflow: visible;
 }
 
 .menu-section + .menu-section {
@@ -31,433 +41,71 @@
   margin-top: 36px;
 }
 
+.menu-section:hover {
+  z-index: 50;
+}
+
 .menu-title {
-  margin: 0;
+  margin: 0 0 10px;
   text-align: center;
-  font-size: 1.45rem;
+
+  font-size: 1.55rem;
   line-height: 1;
-  color: inherit;
+  color: #173246;
+
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
 }
 
-/* Oppgraderinger */
+/* ---------------- Oppgraderinger ---------------- */
 
 .upgrade-list {
-  overflow: hidden;
-  border: 1px solid rgba(25, 49, 73, 0.08);
-  border-radius: 22px;
-  background: rgba(255, 253, 249, 0.72);
-  box-shadow: 0 10px 26px rgba(34, 29, 21, 0.05);
+  position: relative;
+  overflow: visible;
+
+  border: 1px solid rgba(94, 70, 45, 0.22);
+  border-radius: 18px;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(255, 248, 224, 0.9),
+      transparent 42%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 250, 235, 0.96),
+      rgba(239, 228, 203, 0.92)
+    );
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.58),
+    0 12px 24px rgba(38, 28, 16, 0.12);
 }
 
 .upgrade-row {
+  position: relative;
+  z-index: 1;
+
   width: 100%;
-  min-height: 84px;
+  min-height: 76px;
 
   display: grid;
-  grid-template-columns: 64px 1fr auto;
-  align-items: center;
-  gap: 16px;
-
-  padding: 14px 20px;
-
-  border: 0;
-  border-bottom: 1px solid rgba(25, 49, 73, 0.08);
-  background: transparent;
-
-  font-family: inherit;
-  color: inherit;
-  cursor: pointer;
-  transition:
-    background 140ms ease,
-    transform 140ms ease;
-}
-
-.upgrade-row:last-child {
-  border-bottom: 0;
-}
-
-.upgrade-row:hover {
-  background: rgba(255, 248, 236, 0.7);
-}
-
-.upgrade-row:focus,
-.upgrade-row:focus-visible,
-.permanent-card:focus,
-.permanent-card:focus-visible {
-  outline: none;
-  box-shadow: none;
-}
-
-.upgrade-icon {
-  font-size: 2rem;
-  line-height: 1;
-  text-align: center;
-}
-
-.upgrade-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  text-align: left;
-}
-
-.upgrade-name {
-  font-size: 1.35rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.upgrade-cost {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #3f6b4f;
-}
-
-.upgrade-level {
-  padding: 7px 12px;
-  border-radius: 999px;
-
-  background: rgba(78, 94, 72, 0.12);
-  color: #3f6b4f;
-
-  font-size: 0.9rem;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-/* Hytteforbedringer */
-
-.permanent-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.permanent-card {
-  min-height: 92px;
-
-  display: grid;
-  grid-template-columns: 52px 1fr;
+  grid-template-columns: 70px 1fr auto;
   align-items: center;
   gap: 12px;
 
-  padding: 14px 14px;
+  padding: 11px 18px 11px 14px;
 
-  border: 1px solid rgba(25, 49, 73, 0.08);
-  border-radius: 20px;
-  background: rgba(255, 253, 249, 0.66);
-  box-shadow: 0 8px 20px rgba(34, 29, 21, 0.04);
+  border: none;
+  border-bottom: 1px solid rgba(79, 64, 45, 0.1);
+  border-radius: 0;
+
+  background: transparent;
 
   font-family: inherit;
-  color: inherit;
+  color: #173246;
   cursor: pointer;
-  transition:
-    background 140ms ease,
-    transform 140ms ease;
-}
 
-.permanent-card:hover {
-  background: rgba(255, 248, 236, 0.74);
-}
-
-.permanent-icon {
-  font-size: 1.85rem;
-  line-height: 1;
-  text-align: center;
-}
-
-.permanent-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-  text-align: left;
-}
-
-.permanent-name {
-  font-size: 1rem;
-  font-weight: 800;
-  line-height: 1.05;
-}
-
-.permanent-cost {
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: #3f6b4f;
-}
-
-/* Hyttas særpreg */
-
-.trait-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  padding: 14px 18px;
-  border: 1px solid rgba(25, 49, 73, 0.08);
-  border-radius: 20px;
-  background: rgba(255, 253, 249, 0.58);
-}
-
-.trait-icon {
-  width: 48px;
-  height: 48px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid rgba(43, 61, 76, 0.12);
-  border-radius: 11px;
-
-  background: rgba(255, 255, 255, 0.5);
-  font-size: 1.35rem;
-  line-height: 1;
-}
-
-.trait-icon--locked {
-  opacity: 0.35;
-  filter: grayscale(0.9);
-}
-
-.trait-icon--owned {
-  opacity: 1;
-}
-
-.trait-icon--more {
-  color: rgba(25, 49, 73, 0.45);
-  font-weight: 900;
-  font-size: 1.1rem;
-}
-
-/* Nattmodus */
-
-.game--night .upgrades-panel {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  color: #f4ead8;
-}
-
-.game--night .upgrade-list,
-.game--night .permanent-card,
-.game--night .trait-bar {
-  background: rgba(255, 250, 240, 0.08);
-  border-color: rgba(255, 244, 220, 0.1);
-}
-
-.game--night .upgrade-row {
-  border-bottom-color: rgba(255, 244, 220, 0.12);
-}
-
-.game--night .upgrade-row:hover,
-.game--night .permanent-card:hover {
-  background: rgba(255, 255, 255, 0.09);
-}
-
-.game--night .upgrade-cost,
-.game--night .permanent-cost,
-.game--night .upgrade-level {
-  color: #cfe8b8;
-}
-
-.game--night .upgrade-level {
-  background: rgba(207, 232, 184, 0.14);
-}
-
-.game--night .trait-icon {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 244, 220, 0.13);
-}
-
-.game--night .trait-icon--more {
-  color: rgba(244, 234, 216, 0.45);
-}
-
-.game--night .upgrade-row:hover,
-.game--night .permanent-card:hover {
-  background: rgba(255, 244, 220, 0.08);
-}
-
-/* --- Mykere, mer hytteaktig kortstil --- */
-
-.upgrade-list {
-  border: none;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 253, 247, 0.96),
-    rgba(248, 241, 229, 0.92)
-  );
-  box-shadow:
-    0 14px 32px rgba(37, 32, 23, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-.upgrade-row {
-  background: transparent;
-  border-bottom: 1px solid rgba(85, 69, 47, 0.08);
-}
-
-.upgrade-row:last-child {
-  border-bottom: none;
-}
-
-.upgrade-row:hover {
-  background: rgba(255, 246, 228, 0.55);
-}
-
-.permanent-card {
-  border: none;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 253, 247, 0.96),
-    rgba(248, 241, 229, 0.9)
-  );
-  box-shadow:
-    0 12px 26px rgba(37, 32, 23, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.82);
-}
-
-.permanent-card:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 248, 235, 0.98),
-    rgba(246, 236, 217, 0.94)
-  );
-}
-
-/* --- Nattmodus: ikke blå/gjennomsiktig, mer solid og varm --- */
-
-.game--night .upgrade-list {
-  border: none;
-  background: linear-gradient(
-    180deg,
-    rgba(54, 62, 70, 0.96),
-    rgba(42, 50, 59, 0.96)
-  );
-  box-shadow:
-    0 14px 32px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 244, 220, 0.08);
-}
-
-.game--night .upgrade-row {
-  border-bottom: 1px solid rgba(255, 244, 220, 0.08);
-}
-
-.game--night .upgrade-row:last-child {
-  border-bottom: none;
-}
-
-.game--night .upgrade-row:hover {
-  background: rgba(255, 244, 220, 0.06);
-}
-
-.game--night .permanent-card {
-  border: none;
-  background: linear-gradient(
-    180deg,
-    rgba(54, 62, 70, 0.96),
-    rgba(42, 50, 59, 0.96)
-  );
-  box-shadow:
-    0 12px 26px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 244, 220, 0.08);
-}
-
-.game--night .permanent-card:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(62, 70, 78, 0.98),
-    rgba(47, 56, 65, 0.98)
-  );
-}
-
-/* --- Tydeligere hover-effekt --- */
-
-.upgrade-row,
-.permanent-card {
-  transition:
-    background 160ms ease,
-    box-shadow 160ms ease,
-    transform 160ms ease,
-    filter 160ms ease;
-}
-
-.upgrade-row:hover {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 236, 190, 0.85),
-    rgba(255, 248, 232, 0.75)
-  );
-
-  box-shadow:
-    inset 5px 0 0 rgba(183, 124, 38, 0.75),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-
-  filter: brightness(1.03);
-}
-
-.upgrade-row:hover .upgrade-icon,
-.permanent-card:hover .permanent-icon {
-  transform: scale(1.12);
-}
-
-.upgrade-icon,
-.permanent-icon {
-  transition: transform 160ms ease;
-}
-
-.permanent-card:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 238, 199, 0.96),
-    rgba(250, 230, 190, 0.9)
-  );
-
-  box-shadow:
-    0 16px 30px rgba(37, 32, 23, 0.16),
-    inset 0 0 0 2px rgba(183, 124, 38, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85);
-
-  transform: translateY(-2px);
-}
-
-/* --- Tydeligere hover-effekt natt --- */
-
-.game--night .upgrade-row:hover {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 204, 102, 0.2),
-    rgba(255, 244, 220, 0.08)
-  );
-
-  box-shadow:
-    inset 5px 0 0 rgba(255, 210, 122, 0.65),
-    inset 0 1px 0 rgba(255, 244, 220, 0.08);
-
-  filter: brightness(1.08);
-}
-
-.game--night .permanent-card:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(79, 86, 92, 0.98),
-    rgba(55, 64, 73, 0.98)
-  );
-
-  box-shadow:
-    0 16px 30px rgba(0, 0, 0, 0.28),
-    inset 0 0 0 2px rgba(255, 210, 122, 0.16),
-    inset 0 1px 0 rgba(255, 244, 220, 0.1);
-
-  transform: translateY(-2px);
-}
-
-/* --- Click / press-effekt på kjøpbare knapper --- */
-
-.upgrade-row,
-.permanent-card {
-  transform: translateY(0) scale(1);
   transition:
     background 140ms ease,
     box-shadow 140ms ease,
@@ -465,58 +113,280 @@
     filter 140ms ease;
 }
 
-.upgrade-row:active,
-.permanent-card:active {
-  transform: translateY(2px) scale(0.985);
+.upgrade-row:first-child {
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+
+.upgrade-row:last-child {
+  border-bottom: none;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
+
+.upgrade-row:hover {
+  z-index: 20;
+}
+
+.upgrade-row:hover:not(:disabled) {
+  background: rgba(255, 243, 205, 0.76);
+  box-shadow: inset 3px 0 0 rgba(169, 110, 48, 0.42);
+  filter: brightness(1.03);
+}
+
+.upgrade-row:active:not(:disabled) {
+  transform: scale(0.99);
   filter: brightness(0.96);
-
-  box-shadow:
-    inset 0 3px 8px rgba(37, 32, 23, 0.18),
-    inset 0 0 0 2px rgba(120, 80, 35, 0.12);
-}
-
-/* Tydeligere trykk-effekt på Hytteforbedringer i nattmodus */
-
-.game--night .permanent-grid .permanent-card:active {
-  transform: translateY(4px) scale(0.96);
-  filter: brightness(0.78);
-
-  background: linear-gradient(
-    180deg,
-    rgba(28, 34, 42, 0.98),
-    rgba(18, 24, 32, 0.98)
-  );
-
-  box-shadow:
-    inset 0 6px 16px rgba(0, 0, 0, 0.55),
-    inset 0 0 0 2px rgba(255, 210, 122, 0.22),
-    0 2px 6px rgba(0, 0, 0, 0.25);
-}
-
-.game--night .permanent-grid .permanent-card:active .permanent-icon,
-.game--night .permanent-grid .permanent-card:active .permanent-info {
-  transform: translateY(2px);
 }
 
 .upgrade-row:disabled {
+  opacity: 1;
   cursor: not-allowed;
-  opacity: 0.52;
-  filter: grayscale(0.35);
 }
 
 .upgrade-row:disabled:hover {
   background: transparent;
   box-shadow: none;
-  transform: none;
+  filter: none;
 }
 
-.upgrade-row:disabled .upgrade-icon {
-  transform: none;
+.upgrade-icon,
+.permanent-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: transform 160ms ease;
 }
 
-.game--night .upgrade-row:disabled {
-  opacity: 0.45;
+.upgrade-icon {
+  width: 54px;
+  height: 54px;
+
+  font-size: 2rem;
+  line-height: 1;
+  text-align: center;
 }
+
+.upgrade-icon__image {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  display: block;
+
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.25));
+}
+
+.upgrade-row:hover:not(:disabled) .upgrade-icon {
+  transform: scale(1.08);
+}
+
+.upgrade-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  text-align: left;
+}
+
+.upgrade-name {
+  display: block;
+
+  font-size: 1.45rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #173246;
+}
+
+.upgrade-cost {
+  display: block;
+  margin-top: 3px;
+
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #41694e;
+}
+
+.upgrade-level {
+  min-width: 70px;
+  padding: 7px 12px;
+
+  border-radius: 999px;
+  background: rgba(216, 211, 193, 0.74);
+  color: #41694e;
+
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.upgrade-row:disabled .upgrade-icon,
+.upgrade-row:disabled .upgrade-info,
+.upgrade-row:disabled .upgrade-level {
+  opacity: 0.55;
+}
+
+/* ---------------- Hytteforbedringer ---------------- */
+
+.permanent-grid {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  padding: 12px;
+
+  border: 1px solid rgba(94, 70, 45, 0.2);
+  border-radius: 16px;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(255, 248, 224, 0.88),
+      transparent 42%
+    ),
+    linear-gradient(180deg, rgba(255, 250, 235, 0.94), rgba(239, 228, 203, 0.9));
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.52),
+    0 10px 20px rgba(38, 28, 16, 0.1);
+}
+
+.permanent-card {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+
+  min-height: 72px;
+
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+
+  border: 1px solid rgba(96, 74, 49, 0.16);
+  border-radius: 12px;
+
+  background: rgba(255, 249, 226, 0.68);
+  color: #173246;
+
+  font-family: inherit;
+  cursor: pointer;
+
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.46);
+
+  transition:
+    background 140ms ease,
+    box-shadow 140ms ease,
+    transform 90ms ease,
+    filter 140ms ease;
+}
+
+.permanent-card:hover {
+  z-index: 200;
+}
+
+.permanent-card:hover:not(:disabled) {
+  background: rgba(255, 243, 205, 0.86);
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 12px 22px rgba(37, 32, 23, 0.12),
+    inset 0 0 0 2px rgba(183, 124, 38, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.permanent-card:active:not(:disabled) {
+  transform: scale(0.99);
+  filter: brightness(0.96);
+}
+
+.permanent-card:disabled {
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.permanent-card:disabled .permanent-icon,
+.permanent-card:disabled .permanent-info {
+  opacity: 0.55;
+}
+
+.permanent-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.permanent-icon {
+  width: 48px;
+  height: 48px;
+
+  font-size: 1.85rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.permanent-icon__image {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  display: block;
+
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.22));
+}
+
+.permanent-card:hover:not(:disabled) .permanent-icon {
+  transform: scale(1.08);
+}
+
+.permanent-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  min-width: 0;
+  text-align: left;
+}
+
+.permanent-name {
+  display: block;
+
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.05;
+  color: #173246;
+}
+
+.permanent-cost {
+  display: block;
+  margin-top: 3px;
+
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #41694e;
+}
+
+/* ---------------- Focus ---------------- */
+
+.upgrade-row:focus,
+.upgrade-row:focus-visible,
+.permanent-card:focus,
+.permanent-card:focus-visible {
+  outline: none;
+}
+
+.upgrade-row:focus-visible,
+.permanent-card:focus-visible {
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 196, 94, 0.65),
+    0 0 0 3px rgba(255, 196, 94, 0.18);
+}
+
+/* ---------------- Nye upgrades fade-in ---------------- */
 
 .upgrade-row--new {
   animation-name: upgradeFadeIn;
@@ -525,12 +395,10 @@
   animation-fill-mode: backwards;
 }
 
-/* Kaffe kommer først */
 .upgrade-row--new:nth-child(2) {
   animation-delay: 250ms;
 }
 
-/* Stearinlys kommer litt etter */
 .upgrade-row--new:nth-child(3) {
   animation-delay: 750ms;
 }
@@ -541,19 +409,7 @@
   }
 }
 
-/* --- Tooltip for upgrades --- */
-
-.upgrades-panel {
-  position: relative;
-}
-
-.upgrade-list {
-  overflow: visible;
-}
-
-.upgrade-row {
-  position: relative;
-}
+/* ---------------- Tooltip for Oppgraderinger ---------------- */
 
 .upgrade-tooltip {
   position: absolute;
@@ -602,6 +458,11 @@
   transform: translateY(-50%) scale(1);
 }
 
+.upgrade-row:disabled:hover .upgrade-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
 .upgrade-tooltip__label {
   font-size: 0.78rem;
   font-weight: 800;
@@ -624,15 +485,7 @@
   color: #cfe8b8;
 }
 
-/* --- Tooltip for Hytteforbedringer --- */
-
-.permanent-grid {
-  overflow: visible;
-}
-
-.permanent-card {
-  position: relative;
-}
+/* ---------------- Tooltip for Hytteforbedringer ---------------- */
 
 .permanent-tooltip {
   position: absolute;
@@ -641,7 +494,7 @@
   transform: translateY(-50%) scale(0.98);
 
   width: 280px;
-  z-index: 200;
+  z-index: 999;
 
   display: flex;
   flex-direction: column;
@@ -681,6 +534,11 @@
   transform: translateY(-50%) scale(1);
 }
 
+.permanent-card:disabled:hover .permanent-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
 .permanent-tooltip__title {
   font-size: 1rem;
   line-height: 1.1;
@@ -711,4 +569,82 @@
   text-align: left;
 
   color: rgba(255, 242, 220, 0.86);
+}
+
+/* ---------------- Nattmodus ---------------- */
+
+.game--night .upgrades-panel {
+  color: #f4ead8;
+}
+
+.game--night .menu-title {
+  color: #f6ead3;
+  text-shadow: none;
+}
+
+.game--night .upgrade-list,
+.game--night .permanent-grid {
+  border-color: rgba(214, 178, 116, 0.18);
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(92, 72, 48, 0.28),
+      transparent 42%
+    ),
+    linear-gradient(180deg, rgba(42, 53, 61, 0.96), rgba(31, 40, 48, 0.96));
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 236, 190, 0.06),
+    0 12px 24px rgba(0, 0, 0, 0.24);
+}
+
+.game--night .upgrade-row {
+  border-bottom-color: rgba(238, 214, 166, 0.09);
+  background: transparent;
+  color: #f3e7cd;
+}
+
+.game--night .upgrade-row:hover:not(:disabled) {
+  background: rgba(255, 219, 139, 0.13);
+  box-shadow: inset 3px 0 0 rgba(255, 196, 94, 0.38);
+}
+
+.game--night .upgrade-name,
+.game--night .permanent-name {
+  color: #f3e7cd;
+}
+
+.game--night .upgrade-cost,
+.game--night .permanent-cost {
+  color: #d9edc7;
+}
+
+.game--night .upgrade-level {
+  background: rgba(232, 222, 195, 0.16);
+  color: #d9edc7;
+}
+
+.game--night .permanent-card {
+  border-color: rgba(238, 214, 166, 0.12);
+  background: rgba(255, 244, 210, 0.07);
+  color: #f3e7cd;
+}
+
+.game--night .permanent-card:hover:not(:disabled) {
+  background: rgba(255, 219, 139, 0.13);
+}
+
+.game--night .upgrade-icon__image,
+.game--night .permanent-icon__image {
+  filter: brightness(1.05) saturate(1.08)
+    drop-shadow(0 3px 5px rgba(0, 0, 0, 0.45));
+}
+
+.game--night .upgrade-row:disabled .upgrade-icon,
+.game--night .upgrade-row:disabled .upgrade-info,
+.game--night .upgrade-row:disabled .upgrade-level,
+.game--night .permanent-card:disabled .permanent-icon,
+.game--night .permanent-card:disabled .permanent-info {
+  opacity: 0.58;
 }

@@ -1,4 +1,6 @@
 import type { PermanentUpgrade } from "../types/game";
+import storeVinduerIcon from "../assets/icons/store-vinduer.png";
+import vaffelJernIcon from "../assets/icons/vaffeljern.png";
 
 import { GAME_BALANCE } from "./gameBalance";
 
@@ -7,6 +9,7 @@ export const permanentUpgrades: PermanentUpgrade[] = [
     id: "storeWindows",
     name: "Store vinduer",
     icon: "🪟",
+    iconSrc: storeVinduerIcon,
     cost: GAME_BALANCE.permanentUpgrades.storeWindows.cost,
     effectText: "'Regn ute' bonus går fra +30% til +60% Kos/sek.",
     flavorText: "Jo større vinduer, jo mer kos blir det av dårlig vær.",
@@ -18,6 +21,7 @@ export const permanentUpgrades: PermanentUpgrade[] = [
     id: "waffleIron",
     name: "Vaffeljern",
     icon: "🧇",
+    iconSrc: vaffelJernIcon,
     cost: GAME_BALANCE.permanentUpgrades.waffleIron.cost,
     effectText: "Låser opp Vaffel i Oppgraderinger.",
     flavorText: "Ingenting sier hyttekos som lukten av nystekte vafler.",
@@ -25,6 +29,17 @@ export const permanentUpgrades: PermanentUpgrade[] = [
     requiredCompletedEventId: "rain",
     unlockDelayAfterCompletedEventSeconds:
       GAME_BALANCE.permanentUpgrades.waffleIron.unlockDelayAfterRainSeconds,
+  },
+
+  {
+    id: "screeningHedge",
+    name: "hekk",
+    icon: "🌿",
+    cost: GAME_BALANCE.permanentUpgrades.screeningHedge.cost,
+    effectText: "Naboen får ikke øye på deg like ofte.",
+    flavorText: "Du er ikke interessert i å diskutere vedpriser med naboen.",
+    isOwned: false,
+    requiredCompletedEventId: "neighborSmallTalk",
   },
 
   {

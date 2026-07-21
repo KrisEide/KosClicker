@@ -1,11 +1,17 @@
 import type { Upgrade } from "../types/game";
 import { GAME_BALANCE } from "./gameBalance";
 
+import peisIcon from "../assets/icons/peis.png";
+import kaffeIcon from "../assets/icons/kaffe.png";
+import stearinlysIcon from "../assets/icons/stearinlys.png";
+import hyttehjelperIcon from "../assets/icons/hyttehjelper.png";
+
 export const startingUpgrades: Upgrade[] = [
   {
     id: "fireplace",
     name: "Peis",
     icon: "🔥",
+    iconSrc: peisIcon,
     level: 0,
     effectText: "Gir Kos/sek.",
     nextCost: GAME_BALANCE.upgrades.fireplace.levelCosts[0],
@@ -28,6 +34,7 @@ export const startingUpgrades: Upgrade[] = [
     id: "coffee",
     name: "Kaffe",
     icon: "☕",
+    iconSrc: kaffeIcon,
     level: 0,
     effectText: "Øker Kos per klikk.",
     nextCost: GAME_BALANCE.upgrades.coffee.levelCosts[0],
@@ -50,6 +57,7 @@ export const startingUpgrades: Upgrade[] = [
     id: "candle",
     name: "Stearinlys",
     icon: "🕯️",
+    iconSrc: stearinlysIcon,
     level: 0,
     effectText: "+3 Kos/sek.",
     nextCost: GAME_BALANCE.upgrades.candle.levelCosts[0],
@@ -72,6 +80,7 @@ export const startingUpgrades: Upgrade[] = [
     id: "cabinHelper",
     name: "Hyttehjelper",
     icon: "🧍‍♂️",
+    iconSrc: hyttehjelperIcon,
     level: 0,
     effectText: "Klikker automatisk på hytta.",
     nextCost: GAME_BALANCE.upgrades.cabinHelper.levelCosts[0],

@@ -36,24 +36,6 @@
 }
 
 /* Usynlig klikkefelt over hytta */
-.cabin-hotspot {
-  position: absolute;
-
-  /* Juster disse etter hvor hytta ligger i bildet */
-  left: 6%;
-  top: 14%;
-  width: 52%;
-  height: 62%;
-
-  border: none;
-  outline: none;
-  background: transparent;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  appearance: none;
-  box-shadow: none;
-}
 
 /* Ingen hover-bakgrunn, ingen bevegelse */
 .cabin-hotspot:hover {
@@ -150,11 +132,11 @@
 
 .cabin-hotspot {
   position: absolute;
+  inset: 0;
+  z-index: 2;
 
-  left: 6%;
-  top: 14%;
-  width: 63%;
-  height: 62%;
+  width: 100%;
+  height: 100%;
 
   border: none;
   outline: none;
@@ -166,19 +148,18 @@
   box-shadow: none;
 
   overflow: visible;
-  z-index: 2;
 }
 
 .hotspot-label {
   position: absolute;
-  right: 0px;
-  top: 0%;
-  transform: translateY(-50%);
+  left: 53%;
+  top: 13%;
+  transform: translate(-50%, -50%);
 
   z-index: 10;
   pointer-events: none;
 
-  text-align: left;
+  text-align: center;
   white-space: nowrap;
 
   color: #193149;

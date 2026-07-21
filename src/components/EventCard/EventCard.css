@@ -328,3 +328,16 @@
     var(--event-progress-end)
   );
 }
+
+.event-card__icon-image {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.28));
+}
+
+.event-card__icon-image--cold {
+  width: 54px;
+  height: 54px;
+}

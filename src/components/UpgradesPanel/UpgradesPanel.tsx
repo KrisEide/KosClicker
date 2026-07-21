@@ -50,7 +50,18 @@ export function UpgradesPanel({
                 disabled={isDisabled}
                 onClick={() => onBuyUpgrade(upgrade.id)}
               >
-                <span className="upgrade-icon">{upgrade.icon}</span>
+                <span className="upgrade-icon">
+                  {upgrade.iconSrc ? (
+                    <img
+                      className="upgrade-icon__image"
+                      src={upgrade.iconSrc}
+                      alt=""
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    upgrade.icon
+                  )}
+                </span>
 
                 <span className="upgrade-info">
                   <span className="upgrade-name">{upgrade.name}</span>
@@ -85,7 +96,18 @@ export function UpgradesPanel({
                 onClick={() => onBuyPermanentUpgrade(upgrade.id)}
                 disabled={upgrade.isOwned || kos < upgrade.cost}
               >
-                <span className="permanent-icon">{upgrade.icon}</span>
+                <span className="permanent-icon">
+                  {upgrade.iconSrc ? (
+                    <img
+                      className="permanent-icon__image"
+                      src={upgrade.iconSrc}
+                      alt=""
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    upgrade.icon
+                  )}
+                </span>
 
                 <span className="permanent-info">
                   <span className="permanent-name">{upgrade.name}</span>

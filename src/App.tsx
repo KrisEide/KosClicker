@@ -7,9 +7,8 @@ import { UpgradesPanel } from "./components/UpgradesPanel/UpgradesPanel";
 import { startingUpgrades } from "./data/upgrades";
 import { GAME_BALANCE } from "./data/gameBalance";
 import { permanentUpgrades as startingPermanentUpgrades } from "./data/permanentUpgrades";
+import { getRandomEventId, type EventId } from "./game/eventDirector";
 import "./App.css";
-
-type EventId = keyof typeof GAME_BALANCE.events;
 
 type IntroEventStep =
   | "waitingForFirstNight"
@@ -102,10 +101,14 @@ function App() {
   const autoClickTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const nextAutoClickerIdRef = useRef(0);
 
-  const [
-    hasStartedCracklingBirchwoodIntroEvent,
-    setHasStartedCracklingBirchwoodIntroEvent,
-  ] = useState(false);
+  const isNightRef = useRef(false);
+
+  const [lastEventId, setLastEventId] = useState<EventId | null>(null);
+
+  const [isRandomEventsUnlocked, setIsRandomEventsUnlocked] = useState(false);
+
+  const [pendingPriorityEventId, setPendingPriorityEventId] =
+    useState<EventId | null>(null);
 
   function getUpgradeLevel(upgradeId: string) {
     return upgrades.find((upgrade) => upgrade.id === upgradeId)?.level ?? 0;
@@ -121,10 +124,19 @@ function App() {
   const fireplaceLevel = getUpgradeLevel("fireplace");
   const coffeeLevel = getUpgradeLevel("coffee");
   const candleLevel = getUpgradeLevel("candle");
-  const isLargeFireplaceOwned = isPermanentUpgradeOwned("largeFireplace");
 
   function getEventDurationSeconds(eventConfig: typeof activeEventConfig) {
     if (!eventConfig) return 0;
+
+    if ("durationSecondsOverrides" in eventConfig) {
+      const matchingOverride = eventConfig.durationSecondsOverrides.find(
+        (override) => isPermanentUpgradeOwned(override.permanentUpgradeId),
+      );
+
+      if (matchingOverride) {
+        return matchingOverride.durationSeconds;
+      }
+    }
 
     if ("durationSecondsByUpgradeLevel" in eventConfig) {
       const durationConfig = eventConfig.durationSecondsByUpgradeLevel;
@@ -524,6 +536,10 @@ function App() {
       }),
     );
 
+    if (upgrade.unlocksEventId) {
+      setPendingPriorityEventId(upgrade.unlocksEventId as EventId);
+    }
+
     if (upgrade.unlocksUpgradeEvolutionId) {
       setUpgrades((currentNormalUpgrades) =>
         currentNormalUpgrades.map((normalUpgrade) => {
@@ -575,6 +591,14 @@ function App() {
   // ------------------------------------------
   // -------------  useEffects.  --------------
   //-------------------------------------------
+
+  useEffect(() => {
+    if (activeEventId) return;
+    if (!pendingPriorityEventId) return;
+
+    startEvent(pendingPriorityEventId);
+    setPendingPriorityEventId(null);
+  }, [activeEventId, pendingPriorityEventId]);
 
   useEffect(() => {
     if (!hasUnlockedDayNight) return;
@@ -760,6 +784,12 @@ function App() {
         return [...currentEventIds, completedEventId];
       });
 
+      setLastEventId(completedEventId);
+
+      if (completedEventId === "neighborSmallTalk") {
+        setIsRandomEventsUnlocked(true);
+      }
+
       setActiveEventId(null);
       return;
     }
@@ -810,17 +840,15 @@ function App() {
   useEffect(() => {
     if (!hasWaffleIronAppeared) return;
     if (hasStartedNeighborIntroEvent) return;
+    if (activeEventId) return;
 
     const neighborIntroTimer = setTimeout(() => {
-      setActiveEventId("neighborSmallTalk");
-      setEventTimeRemaining(
-        GAME_BALANCE.events.neighborSmallTalk.durationSeconds,
-      );
+      startEvent("neighborSmallTalk");
       setHasStartedNeighborIntroEvent(true);
     }, GAME_BALANCE.events.neighborSmallTalk.firstStartDelayAfterWaffleIronAppearsSeconds * 1000);
 
     return () => clearTimeout(neighborIntroTimer);
-  }, [hasWaffleIronAppeared, hasStartedNeighborIntroEvent]);
+  }, [hasWaffleIronAppeared, hasStartedNeighborIntroEvent, activeEventId]);
 
   const activeEvent = activeEventConfig
     ? {
@@ -857,23 +885,49 @@ function App() {
     };
   });
 
-  //--------------------- KNITRENDE PEISKOS
   useEffect(() => {
-    if (!isLargeFireplaceOwned) return;
-    if (hasStartedCracklingBirchwoodIntroEvent) return;
+    if (!isRandomEventsUnlocked) return;
     if (activeEventId) return;
+    if (pendingPriorityEventId) return;
 
-    const cracklingBirchwoodTimer = setTimeout(() => {
-      startEvent("cracklingBirchwood");
-      setHasStartedCracklingBirchwoodIntroEvent(true);
-    }, GAME_BALANCE.permanentUpgrades.largeFireplace.firstCracklingBirchwoodDelaySeconds * 1000);
+    const randomDelaySeconds =
+      GAME_BALANCE.randomEvents.minDelaySeconds +
+      Math.random() *
+        (GAME_BALANCE.randomEvents.maxDelaySeconds -
+          GAME_BALANCE.randomEvents.minDelaySeconds);
 
-    return () => clearTimeout(cracklingBirchwoodTimer);
+    const randomEventTimer = setTimeout(() => {
+      const ownedPermanentUpgradeIds = permanentUpgrades
+        .filter((upgrade) => upgrade.isOwned)
+        .map((upgrade) => upgrade.id);
+
+      const nextEventId = getRandomEventId({
+        isNight: isNightRef.current,
+        lastEventId,
+        ownedPermanentUpgradeIds,
+      });
+
+      if (!nextEventId) return;
+
+      startEvent(nextEventId);
+    }, randomDelaySeconds * 1000);
+
+    return () => clearTimeout(randomEventTimer);
   }, [
-    isLargeFireplaceOwned,
-    hasStartedCracklingBirchwoodIntroEvent,
+    isRandomEventsUnlocked,
     activeEventId,
+    pendingPriorityEventId,
+    lastEventId,
+    permanentUpgrades,
   ]);
+
+  useEffect(() => {
+    isNightRef.current = isNight;
+  }, [isNight]);
+
+  // ----------------------------------
+  // ---------- RETURN START ----------
+  // ----------------------------------
 
   return (
     <main
