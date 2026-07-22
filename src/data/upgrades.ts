@@ -59,15 +59,15 @@ export const startingUpgrades: Upgrade[] = [
     icon: "🕯️",
     iconSrc: stearinlysIcon,
     level: 0,
-    effectText: "+3 Kos/sek.",
+    effectText: "Gir mer Kos/sek.",
     nextCost: GAME_BALANCE.upgrades.candle.levelCosts[0],
     maxLevel: 10,
     unlockStage: "afterCabinWarm",
     evolution: {
       permanentUpgradeId: "windowCandles",
-      name: "Stearinlys i vinduskarmen",
+      name: "Vinduslys",
       icon: "🌙🕯️",
-      effectText: "Øker Kos/sek og gjør natten sterkere.",
+      effectText: "Gir mer Kos/sek og øker nattbonusen.",
       maxLevel: GAME_BALANCE.upgrades.candle.windowCandlesMaxLevel,
       levelOffset: GAME_BALANCE.upgrades.candle.baseMaxLevel,
       unlockNextCost:

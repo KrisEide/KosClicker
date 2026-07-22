@@ -76,6 +76,11 @@ export function UpgradesPanel({
                   <span className="upgrade-tooltip__effect">
                     {upgrade.effectText}
                   </span>
+                  {upgrade.tooltipDetailText && (
+                    <span className="upgrade-tooltip__detail">
+                      {upgrade.tooltipDetailText}
+                    </span>
+                  )}
                 </span>
               </button>
             );

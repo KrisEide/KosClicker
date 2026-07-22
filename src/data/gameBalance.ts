@@ -79,7 +79,8 @@ export const GAME_BALANCE = {
       flavorText:
         "Naboen har sett røyk fra pipa og vil bare slå av en liten prat. Det blir aldri en liten prat.",
       effects: {
-        kosPerSecondBonus: -1,
+        kosPerSecondMultiplier: 0,
+        helperMultiplier: 0,
       },
       theme: {
         borderColor: "rgba(130, 78, 48, 0.28)",
@@ -208,7 +209,7 @@ export const GAME_BALANCE = {
         "Noen har bestemt at den raskeste veien til stien går rett over tomta di.",
       effects: {
         directKosChange: -500,
-        kosPerSecondBonus: -0.75,
+        kosPerSecondBonus: -0.5,
       },
       theme: {
         borderColor: "rgba(126, 91, 58, 0.3)",
@@ -264,7 +265,7 @@ export const GAME_BALANCE = {
     },
 
     waffleIron: {
-      cost: 6000,
+      cost: 4000,
       unlockDelayAfterRainSeconds: 15,
     },
 
@@ -277,7 +278,7 @@ export const GAME_BALANCE = {
     },
 
     largeFireplace: {
-      cost: 35000,
+      cost: 15000,
     },
 
     cocoa: {
@@ -297,9 +298,9 @@ export const GAME_BALANCE = {
       largeFireplaceMaxLevel: 10,
 
       kosPerSecondByLevel: [
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 2, 2, 2, 3,
 
-        2, 2, 3, 3, 4, 4, 5, 6, 7, 8,
+        3, 4, 5, 6, 7, 8, 10, 12, 15, 18,
       ],
 
       levelCosts: [
@@ -314,28 +315,29 @@ export const GAME_BALANCE = {
       cocoaMaxLevel: 10,
 
       clickBonusPerLevel: [
-        1, 1, 1, 1, 2, 2, 3, 4, 5, 6,
+        1, 1, 1, 1, 2, 2, 2, 3, 3, 4,
 
-        6, 7, 8, 10, 12, 15, 18, 22, 27, 34,
+        4, 4, 4, 5, 6, 7, 9, 10, 12, 15,
       ],
 
       levelCosts: [
-        40, 70, 110, 180, 280, 450, 700, 1100, 1700, 2600,
+        40, 90, 190, 240, 600, 1000, 2000, 3000, 4500, 6000,
 
-        4500, 6500, 9000, 13000, 18500, 26500, 38000, 55000, 80000, 115000,
+        6500, 7500, 9000, 13000, 18500, 26500, 38000, 55000, 80000, 115000,
       ],
     },
 
     candle: {
       kosPerSecondPerLevel: 3,
+      windowCandlesKosPerSecondByLevel: [6, 7, 8, 9, 10, 12, 14, 16, 18, 22],
 
       baseMaxLevel: 10,
       windowCandlesMaxLevel: 10,
 
       levelCosts: [
-        90, 150, 250, 420, 700, 1100, 1700, 2600, 4000, 6000,
+        90, 250, 400, 800, 1000, 1500, 2800, 4000, 6000, 10000,
 
-        9000, 13000, 19000, 28000, 41000, 60000, 88000, 130000, 190000, 280000,
+        15000, 16000, 19000, 28000, 41000, 60000, 88000, 130000, 190000, 280000,
       ],
 
       windowCandlesNightBonusByLevel: [
@@ -357,7 +359,7 @@ export const GAME_BALANCE = {
     },
     waffle: {
       levelCosts: [
-        700, 1100, 1700, 2600, 4000, 6500, 10500, 17000, 27000, 43000,
+        700, 2500, 3000, 4500, 8000, 10500, 15000, 27000, 35000, 45000,
       ],
 
       minSpawnDelaySecondsByLevel: [60, 60, 60, 60, 60, 60, 60, 60, 60, 60],

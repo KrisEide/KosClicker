@@ -7,6 +7,7 @@ export type Upgrade = {
   iconSrc?: string;
   level: number;
   effectText: string;
+  tooltipDetailText?: string;
   nextCost: number;
   maxLevel?: number;
 
@@ -22,6 +23,7 @@ export type Upgrade = {
     icon: string;
     iconSrc?: string;
     effectText: string;
+
     maxLevel: number;
     levelOffset: number;
     unlockNextCost: number;
@@ -91,6 +93,7 @@ export type GameEvent = {
 
   effects: {
     kosPerSecondBonus?: number;
+    kosPerSecondMultiplier?: number;
     directKosChange?: number;
     clickMultiplier?: number;
     helperMultiplier?: number;

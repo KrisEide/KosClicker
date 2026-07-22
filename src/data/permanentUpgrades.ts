@@ -44,7 +44,7 @@ export const permanentUpgrades: PermanentUpgrade[] = [
 
   {
     id: "windowCandles",
-    name: "Stearinlys i vinduskarmen",
+    name: "Vinduslys",
     icon: "🌙",
     cost: GAME_BALANCE.permanentUpgrades.windowCandles.cost,
     effectText: "Oppgraderer stearinlys og gjør nattbonusen sterkere.",

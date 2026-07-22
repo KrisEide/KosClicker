@@ -8,6 +8,7 @@ import { startingUpgrades } from "./data/upgrades";
 import { GAME_BALANCE } from "./data/gameBalance";
 import { permanentUpgrades as startingPermanentUpgrades } from "./data/permanentUpgrades";
 import { getRandomEventId, type EventId } from "./game/eventDirector";
+import type { GameEvent } from "./types/game";
 import "./App.css";
 
 type IntroEventStep =
@@ -60,6 +61,10 @@ function getNextUpgradeCost(upgradeId: string, nextLevel: number) {
 
 function getRandomPercent(min: number, max: number) {
   return Math.random() * (max - min) + min;
+}
+
+function getEventKosPerSecondMultiplier(eventConfig: GameEvent | null): number {
+  return eventConfig?.effects.kosPerSecondMultiplier ?? 1;
 }
 
 function App() {
@@ -251,8 +256,20 @@ function App() {
       .slice(0, fireplaceLevel)
       .reduce((total, kosPerSecond) => total + kosPerSecond, 0);
 
-  const candleKosPerSecond =
-    candleLevel * GAME_BALANCE.upgrades.candle.kosPerSecondPerLevel;
+  const baseCandleLevel = Math.min(
+    candleLevel,
+    GAME_BALANCE.upgrades.candle.baseMaxLevel,
+  );
+
+  const baseCandleKosPerSecond =
+    baseCandleLevel * GAME_BALANCE.upgrades.candle.kosPerSecondPerLevel;
+
+  const windowCandlesKosPerSecond =
+    GAME_BALANCE.upgrades.candle.windowCandlesKosPerSecondByLevel
+      .slice(0, windowCandlesLevel)
+      .reduce((total, kosPerSecond) => total + kosPerSecond, 0);
+
+  const candleKosPerSecond = baseCandleKosPerSecond + windowCandlesKosPerSecond;
 
   const baseKosPerSecond = fireplaceKosPerSecond + candleKosPerSecond;
 
@@ -303,6 +320,9 @@ function App() {
     levelBasedEventKosPerSecondBonus +
     storeWindowsRainBonus;
 
+  const eventKosPerSecondMultiplier =
+    getEventKosPerSecondMultiplier(activeEventConfig);
+
   const waffleKosPerSecondBonus =
     waffleBonusTimeRemaining > 0 && waffleLevel > 0
       ? (GAME_BALANCE.upgrades.waffle.kosPerSecondBonusByLevel[
@@ -329,7 +349,12 @@ function App() {
     eventKosPerSecondBonus +
     waffleKosPerSecondBonus;
 
-  const kosPerSecond = baseKosPerSecond * (1 + totalKosPerSecondBonus);
+  const kosPerSecond = Math.max(
+    0,
+    baseKosPerSecond *
+      (1 + totalKosPerSecondBonus) *
+      eventKosPerSecondMultiplier,
+  );
 
   const visibleUpgrades = upgrades.filter((upgrade) => {
     if (isCabinCold) {
@@ -368,6 +393,11 @@ function App() {
       ? activeEventConfig.effects.clickMultiplier
       : 1;
 
+  const eventHelperMultiplier =
+    activeEventConfig && "helperMultiplier" in activeEventConfig.effects
+      ? activeEventConfig.effects.helperMultiplier
+      : 1;
+
   const baseKosPerClick = 1 + coffeeClickBonus;
 
   const kosPerClick = Math.max(
@@ -376,6 +406,19 @@ function App() {
       baseKosPerClick * (1 + waffleClickBonusPercent) * eventClickMultiplier,
     ),
   );
+
+  const cabinHelperKosPerCycle =
+    cabinHelperLevel > 0
+      ? kosPerClick *
+        cabinHelperClickMultiplier *
+        cabinHelperClicksPerCycle *
+        waffleHelperFrenzyActualMultiplier *
+        eventHelperMultiplier
+      : 0;
+
+  const cabinHelperKosPerSecond =
+    cabinHelperKosPerCycle /
+    (GAME_BALANCE.upgrades.cabinHelper.intervalMs / 1000);
 
   const visiblePermanentUpgrades = permanentUpgrades.filter((upgrade) => {
     if (upgrade.requiredCompletedEventId) {
@@ -566,11 +609,6 @@ function App() {
       );
     }
   }
-
-  const eventHelperMultiplier =
-    activeEventConfig && "helperMultiplier" in activeEventConfig.effects
-      ? activeEventConfig.effects.helperMultiplier
-      : 1;
 
   function startEvent(eventId: EventId) {
     const eventConfig = GAME_BALANCE.events[eventId];
@@ -867,22 +905,32 @@ function App() {
     : null;
 
   const visibleUpgradesForDisplay = visibleUpgrades.map((upgrade) => {
-    if (!upgrade.evolution) return upgrade;
+    let displayUpgrade = upgrade;
 
-    const hasEvolutionUpgrade = isPermanentUpgradeOwned(
-      upgrade.evolution.permanentUpgradeId,
-    );
+    if (
+      upgrade.evolution &&
+      isPermanentUpgradeOwned(upgrade.evolution.permanentUpgradeId)
+    ) {
+      displayUpgrade = {
+        ...upgrade,
+        name: upgrade.evolution.name,
+        icon: upgrade.evolution.icon,
+        effectText: upgrade.evolution.effectText,
+        level: Math.max(0, upgrade.level - upgrade.evolution.levelOffset),
+        maxLevel: upgrade.evolution.maxLevel,
+      };
+    }
 
-    if (!hasEvolutionUpgrade) return upgrade;
+    if (upgrade.id === "cabinHelper" && cabinHelperLevel > 0) {
+      return {
+        ...displayUpgrade,
+        tooltipDetailText: `Bidrar nå med ca. ${Math.round(
+          cabinHelperKosPerSecond,
+        )} Kos/sek.`,
+      };
+    }
 
-    return {
-      ...upgrade,
-      name: upgrade.evolution.name,
-      icon: upgrade.evolution.icon,
-      effectText: upgrade.evolution.effectText,
-      level: Math.max(0, upgrade.level - upgrade.evolution.levelOffset),
-      maxLevel: upgrade.evolution.maxLevel,
-    };
+    return displayUpgrade;
   });
 
   useEffect(() => {
@@ -947,7 +995,9 @@ function App() {
           className={`day-night-indicator day-night-indicator--${timeOfDay}`}
         >
           {isNight
-            ? `🌙 Nattbonus aktiv: +${NIGHT_BONUS * 100}% Kos/sek`
+            ? `🌙 Nattbonus aktiv: +${Number(
+                (currentNightBonus * 100).toFixed(1),
+              )}% Kos/sek`
             : "☀️ Dagtid: normal kos"}
         </div>
 

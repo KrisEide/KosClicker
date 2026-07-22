@@ -648,3 +648,10 @@
 .game--night .permanent-card:disabled .permanent-info {
   opacity: 0.58;
 }
+
+.upgrade-tooltip__detail {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #fff2cf;
+}
