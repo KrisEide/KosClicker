@@ -5,11 +5,14 @@ type TopBarProps = {
   kosPerSecond: number;
   onDebugAddKos: () => void;
   onDebugAutoClickBurst: () => void;
+  kosPerSecondStatus: "normal" | "positive" | "negative";
+  kosPerSecondStatusIcon?: string;
 };
-
 export function TopBar({
   kos,
   kosPerSecond,
+  kosPerSecondStatus,
+  kosPerSecondStatusIcon,
   onDebugAddKos,
   onDebugAutoClickBurst,
 }: TopBarProps) {
@@ -37,11 +40,17 @@ export function TopBar({
       </div>
 
       <p>
-        Kos: <span>{Math.floor(kos)}</span>
+        Kos: <span className="kos-value">{Math.floor(kos)}</span>
       </p>
 
-      <p>
-        Kos/sek: <span>{kosPerSecond.toFixed(1)}</span>
+      <p className={`kos-per-second kos-per-second--${kosPerSecondStatus}`}>
+        Kos/sek:{" "}
+        <span className="kos-per-second__value">{kosPerSecond.toFixed(1)}</span>
+        {kosPerSecondStatusIcon && (
+          <span className="kos-per-second__event-icon" aria-hidden="true">
+            {kosPerSecondStatusIcon}
+          </span>
+        )}
       </p>
     </header>
   );

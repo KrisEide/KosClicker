@@ -49,7 +49,8 @@
   border-bottom-color: rgba(247, 242, 232, 0.18);
 }
 
-.game--night .top-bar span {
+.game--night .kos-value,
+.game--night .kos-per-second--normal .kos-per-second__value {
   color: #ffd27a;
 }
 

@@ -173,7 +173,7 @@ export const GAME_BALANCE = {
       title: "ELG UTENFOR HYTTA",
       icon: "🫎",
       type: "positive",
-      randomWeight: 7,
+      randomWeight: 20,
 
       durationSeconds: 40,
       onlyAtNight: true,
@@ -345,13 +345,11 @@ export const GAME_BALANCE = {
       ],
     },
     cabinHelper: {
-      levelCosts: [
-        400, 750, 1300, 2200, 3600, 6000, 10000, 17000, 29000, 50000,
-      ],
+      levelCosts: [400, 750, 1300, 2200, 3600, 4500, 6500, 10000, 14000, 23000],
 
       intervalMs: 2_000,
 
-      clicksPerCycleByLevel: [0.6, 0.9, 1.3, 1.8, 2.4, 3.1, 3.9, 4.8, 5.8, 7],
+      clicksPerCycleByLevel: [0.8, 1.3, 1.9, 2.7, 3.7, 4.9, 6.3, 7.9, 9.7, 12],
 
       visualClicksPerCycleByLevel: [1, 2, 3, 3, 4, 5, 5, 6, 7, 8],
 
@@ -382,9 +380,7 @@ export const GAME_BALANCE = {
         1, 1.15, 1.3, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
       ],
 
-      helperFrenzyActualMultiplierByHelperLevel: [
-        1.1, 1.15, 1.2, 1.25, 1.35, 1.45, 1.6, 1.8, 2, 2.5,
-      ],
+      helperFrenzyActualMultiplierByHelperLevel: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 
       helperFrenzyVisualExtraClicksByHelperLevel: [
         1, 2, 3, 4, 5, 6, 7, 8, 10, 12,

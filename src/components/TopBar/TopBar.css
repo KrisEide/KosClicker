@@ -25,8 +25,19 @@
   font-size: 2rem;
 }
 
-.top-bar span {
+.kos-value,
+.kos-per-second--normal .kos-per-second__value {
   color: #46644a;
+}
+
+.kos-per-second--positive,
+.kos-per-second--positive .kos-per-second__value {
+  color: #72c96a;
+}
+
+.kos-per-second--negative,
+.kos-per-second--negative .kos-per-second__value {
+  color: #d8685f;
 }
 
 /* Debugtestingknapp  */
@@ -66,4 +77,29 @@
 
 .debug-kos-button:active {
   transform: translateY(1px);
+}
+
+.kos-per-second {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  transition:
+    color 180ms ease,
+    text-shadow 180ms ease;
+}
+
+.kos-per-second--positive {
+  color: #72c96a;
+  text-shadow: 0 0 10px rgba(114, 201, 106, 0.28);
+}
+
+.kos-per-second--negative {
+  color: #d8685f;
+  text-shadow: 0 0 10px rgba(216, 104, 95, 0.22);
+}
+
+.kos-per-second__event-icon {
+  font-size: 1rem;
+  line-height: 1;
 }

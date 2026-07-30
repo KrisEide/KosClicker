@@ -388,6 +388,18 @@ function App() {
     return true;
   });
 
+  const eventChangesKosPerSecond =
+    eventKosPerSecondMultiplier !== 1 || eventKosPerSecondBonus !== 0;
+
+  const kosPerSecondStatus: "normal" | "positive" | "negative" =
+    eventChangesKosPerSecond && activeEventConfig
+      ? activeEventConfig.type
+      : "normal";
+
+  const kosPerSecondStatusIcon = eventChangesKosPerSecond
+    ? activeEventConfig?.icon
+    : undefined;
+
   const eventClickMultiplier =
     activeEventConfig && "clickMultiplier" in activeEventConfig.effects
       ? activeEventConfig.effects.clickMultiplier
@@ -986,6 +998,8 @@ function App() {
       <TopBar
         kos={kos}
         kosPerSecond={kosPerSecond}
+        kosPerSecondStatus={kosPerSecondStatus}
+        kosPerSecondStatusIcon={kosPerSecondStatusIcon}
         onDebugAddKos={handleDebugAddKos}
         onDebugAutoClickBurst={handleDebugAutoClickBurst}
       />
