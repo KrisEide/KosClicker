@@ -1,7 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type SetStateAction,
+} from "react";
 import { CabinArea } from "./components/CabinArea/CabinArea";
 import { CabinTraits } from "./components/CabinTraits/CabinTraits";
 import { EventCard } from "./components/EventCard/EventCard";
+import { MooseEventVisitor } from "./components/MooseEventVisitor/MooseEventVisitor";
 import { TopBar } from "./components/TopBar/TopBar";
 import { UpgradesPanel } from "./components/UpgradesPanel/UpgradesPanel";
 import { startingUpgrades } from "./data/upgrades";
@@ -31,8 +38,12 @@ type ActiveWaffle = {
   yPercent: number;
 };
 
+type KosState = {
+  current: number;
+  highestReached: number;
+};
+
 const WARM_CABIN_FIREPLACE_LEVEL = GAME_BALANCE.warmCabinFireplaceLevel;
-const PHASE_LENGTH_MS = GAME_BALANCE.phaseLengthMs;
 const NIGHT_BONUS = GAME_BALANCE.nightBonus;
 
 function getNextUpgradeCost(upgradeId: string, nextLevel: number) {
@@ -68,7 +79,24 @@ function getEventKosPerSecondMultiplier(eventConfig: GameEvent | null): number {
 }
 
 function App() {
-  const [kos, setKos] = useState(0);
+  const [kosState, setKosState] = useState<KosState>({
+    current: 0,
+    highestReached: 0,
+  });
+  const kos = kosState.current;
+
+  const setKos = useCallback((update: SetStateAction<number>) => {
+    setKosState((currentState) => {
+      const nextKos =
+        typeof update === "function" ? update(currentState.current) : update;
+
+      return {
+        current: nextKos,
+        highestReached: Math.max(currentState.highestReached, nextKos),
+      };
+    });
+  }, []);
+
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("day");
   const [upgrades, setUpgrades] = useState(startingUpgrades);
 
@@ -165,6 +193,16 @@ function App() {
 
   function getEventEffectText(eventConfig: typeof activeEventConfig) {
     if (!eventConfig) return "";
+
+    if ("effectTextOverrides" in eventConfig) {
+      const matchingOverride = eventConfig.effectTextOverrides.find(
+        (override) => isPermanentUpgradeOwned(override.permanentUpgradeId),
+      );
+
+      if (matchingOverride) {
+        return matchingOverride.effectText;
+      }
+    }
 
     if ("effectTextByUpgradeLevel" in eventConfig) {
       const effectTextConfig = eventConfig.effectTextByUpgradeLevel;
@@ -315,8 +353,16 @@ function App() {
       ? activeEventConfig.effects.kosPerSecondBonus
       : 0;
 
+  const eventKosPerSecondBonusOverride =
+    activeEventConfig &&
+    "kosPerSecondBonusOverrides" in activeEventConfig.effects
+      ? activeEventConfig.effects.kosPerSecondBonusOverrides.find((override) =>
+          isPermanentUpgradeOwned(override.permanentUpgradeId),
+        )?.kosPerSecondBonus
+      : undefined;
+
   const eventKosPerSecondBonus =
-    baseEventKosPerSecondBonus +
+    (eventKosPerSecondBonusOverride ?? baseEventKosPerSecondBonus) +
     levelBasedEventKosPerSecondBonus +
     storeWindowsRainBonus;
 
@@ -400,6 +446,13 @@ function App() {
     ? activeEventConfig?.icon
     : undefined;
 
+  const kosPerSecondStatusIconSrc =
+    eventChangesKosPerSecond &&
+    activeEventConfig &&
+    "iconSrc" in activeEventConfig
+      ? activeEventConfig.iconSrc
+      : undefined;
+
   const eventClickMultiplier =
     activeEventConfig && "clickMultiplier" in activeEventConfig.effects
       ? activeEventConfig.effects.clickMultiplier
@@ -433,6 +486,13 @@ function App() {
     (GAME_BALANCE.upgrades.cabinHelper.intervalMs / 1000);
 
   const visiblePermanentUpgrades = permanentUpgrades.filter((upgrade) => {
+    if (
+      upgrade.requiredKosReached !== undefined &&
+      kosState.highestReached < upgrade.requiredKosReached
+    ) {
+      return false;
+    }
+
     if (upgrade.requiredCompletedEventId) {
       const hasCompletedRequiredEvent = completedEventIds.includes(
         upgrade.requiredCompletedEventId as EventId,
@@ -528,7 +588,7 @@ function App() {
         autoClickTimeoutsRef.current.push(clickTimer);
       }
     },
-    [spawnAutoClickerVisual],
+    [setKos, spawnAutoClickerVisual],
   );
 
   function handleDebugAutoClickBurst() {
@@ -653,12 +713,19 @@ function App() {
   useEffect(() => {
     if (!hasUnlockedDayNight) return;
 
-    const phaseTimer = setInterval(() => {
-      setTimeOfDay((currentTime) => (currentTime === "day" ? "night" : "day"));
-    }, PHASE_LENGTH_MS);
+    const isIntroSequenceActive = introEventStep !== "done";
+    const phaseLengthMs = isIntroSequenceActive
+      ? GAME_BALANCE.dayNightCycle.introPhaseLengthMs
+      : timeOfDay === "day"
+        ? GAME_BALANCE.dayNightCycle.dayLengthMs
+        : GAME_BALANCE.dayNightCycle.nightLengthMs;
 
-    return () => clearInterval(phaseTimer);
-  }, [hasUnlockedDayNight]);
+    const phaseTimer = setTimeout(() => {
+      setTimeOfDay((currentTime) => (currentTime === "day" ? "night" : "day"));
+    }, phaseLengthMs);
+
+    return () => clearTimeout(phaseTimer);
+  }, [hasUnlockedDayNight, introEventStep, timeOfDay]);
 
   useEffect(() => {
     if (kosPerSecond <= 0) return;
@@ -668,7 +735,7 @@ function App() {
     }, 1000);
 
     return () => clearInterval(kosTimer);
-  }, [kosPerSecond]);
+  }, [kosPerSecond, setKos]);
 
   useEffect(() => {
     return () => {
@@ -904,6 +971,10 @@ function App() {
     ? {
         type: activeEventConfig.type,
         icon: activeEventConfig.icon,
+        iconSrc:
+          "iconSrc" in activeEventConfig
+            ? activeEventConfig.iconSrc
+            : undefined,
         title: activeEventConfig.title,
         effectText: getEventEffectText(activeEventConfig),
         flavorText:
@@ -927,6 +998,7 @@ function App() {
         ...upgrade,
         name: upgrade.evolution.name,
         icon: upgrade.evolution.icon,
+        iconSrc: upgrade.evolution.iconSrc,
         effectText: upgrade.evolution.effectText,
         level: Math.max(0, upgrade.level - upgrade.evolution.levelOffset),
         maxLevel: upgrade.evolution.maxLevel,
@@ -1000,9 +1072,18 @@ function App() {
         kosPerSecond={kosPerSecond}
         kosPerSecondStatus={kosPerSecondStatus}
         kosPerSecondStatusIcon={kosPerSecondStatusIcon}
+        kosPerSecondStatusIconSrc={kosPerSecondStatusIconSrc}
         onDebugAddKos={handleDebugAddKos}
         onDebugAutoClickBurst={handleDebugAutoClickBurst}
       />
+
+      {activeEventId === "moose" && (
+        <MooseEventVisitor
+          durationSeconds={
+            activeEvent?.duration ?? GAME_BALANCE.events.moose.durationSeconds
+          }
+        />
+      )}
 
       <section className="game-area">
         <div

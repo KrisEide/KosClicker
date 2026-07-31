@@ -264,8 +264,11 @@
 }
 
 .waffle-popup__icon {
-  font-size: 3.7rem;
-  line-height: 1;
+  display: block;
+  width: 112px;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
 
   filter: drop-shadow(0 0 7px rgba(255, 226, 130, 0.65))
     drop-shadow(0 0 16px rgba(255, 169, 32, 0.42))

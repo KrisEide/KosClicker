@@ -1,14 +1,19 @@
 import type { GameEvent } from "../types/game";
+import naboIcon from "../assets/icons/nabo.png";
+import elgIcon from "../assets/icons/elg.png";
+import turgåerIcon from "../assets/icons/turgåer.png";
 
 export const GAME_BALANCE = {
-  debugKosAmount: 1000,
+  debugKosAmount: 10000,
 
   warmCabinFireplaceLevel: 3,
   dayNightUnlockCandleLevel: 1,
 
-  // rundt 100_00 virker bra her.
-  //Hvor lenge natt og dag fasen varer
-  phaseLengthMs: 100_000,
+  dayNightCycle: {
+    introPhaseLengthMs: 100_000,
+    dayLengthMs: 180_000,
+    nightLengthMs: 120_000,
+  },
   nightBonus: 0.15,
 
   autoClickBurst: {
@@ -59,6 +64,7 @@ export const GAME_BALANCE = {
     neighborSmallTalk: {
       title: "NABOEN VIL SMÅPRATE",
       icon: "🧍",
+      iconSrc: naboIcon,
       type: "negative",
       randomWeight: 18,
       randomWeightOverrides: [
@@ -67,7 +73,7 @@ export const GAME_BALANCE = {
           randomWeight: 10,
         },
       ],
-      durationSeconds: 40,
+      durationSeconds: 50,
       durationSecondsOverrides: [
         {
           permanentUpgradeId: "screeningHedge",
@@ -172,14 +178,33 @@ export const GAME_BALANCE = {
     moose: {
       title: "ELG UTENFOR HYTTA",
       icon: "🫎",
+      iconSrc: elgIcon,
       type: "positive",
       randomWeight: 20,
 
       durationSeconds: 40,
+      durationSecondsOverrides: [
+        {
+          permanentUpgradeId: "binoculars",
+          durationSeconds: 60,
+        },
+      ],
       onlyAtNight: true,
-      effectText: "+70% Kos/sek",
+      effectText: "+60% Kos/sek",
+      effectTextOverrides: [
+        {
+          permanentUpgradeId: "binoculars",
+          effectText: "+80% Kos/sek",
+        },
+      ],
       effects: {
-        kosPerSecondBonus: 0.7,
+        kosPerSecondBonus: 0.6,
+        kosPerSecondBonusOverrides: [
+          {
+            permanentUpgradeId: "binoculars",
+            kosPerSecondBonus: 0.8,
+          },
+        ],
       },
       theme: {
         borderColor: "rgba(78, 117, 68, 0.3)",
@@ -201,15 +226,16 @@ export const GAME_BALANCE = {
     hikers: {
       title: "TURGÅERE PÅ TOMTA",
       icon: "🥾",
+      iconSrc: turgåerIcon,
       type: "negative",
       randomWeight: 12,
       durationSeconds: 30,
-      effectText: "-500 Kos, -50% Kos/sek",
+      effectText: "-1000 Kos, -70% Kos/sek",
       flavorText:
         "Noen har bestemt at den raskeste veien til stien går rett over tomta di.",
       effects: {
-        directKosChange: -500,
-        kosPerSecondBonus: -0.5,
+        directKosChange: -1000,
+        kosPerSecondBonus: -0.7,
       },
       theme: {
         borderColor: "rgba(126, 91, 58, 0.3)",
@@ -234,10 +260,10 @@ export const GAME_BALANCE = {
       type: "negative",
       randomWeight: 18,
       durationSeconds: 60,
-      effectText: "-60% klikk, -60% Hyttehjelper",
+      effectText: "-70% klikk, -70% Hyttehjelper",
       effects: {
-        clickMultiplier: 0.4,
-        helperMultiplier: 0.4,
+        clickMultiplier: 0.3,
+        helperMultiplier: 0.3,
       },
       theme: {
         borderColor: "rgba(112, 112, 50, 0.28)",
@@ -288,6 +314,15 @@ export const GAME_BALANCE = {
     marshmallows: {
       cost: 150000,
       cocoaClickBonusMultiplier: 1.5,
+    },
+
+    troll: {
+      cost: 1_000_000,
+      unlockKos: 80_000,
+    },
+
+    binoculars: {
+      cost: 40_000,
     },
   },
 

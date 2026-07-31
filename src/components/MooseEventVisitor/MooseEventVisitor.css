@@ -1,0 +1,91 @@
+.moose-event-visitor {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 40;
+
+  width: min(76vw, 1100px);
+  height: calc(100vh - 96px);
+  overflow: visible;
+
+  pointer-events: none;
+}
+
+.moose-event-visitor__image {
+  position: absolute;
+  left: 0;
+  bottom: -8%;
+
+  width: min(74vw, 1100px);
+  max-width: none;
+  height: auto;
+
+  opacity: 0;
+  transform-origin: 20% 78%;
+  filter: drop-shadow(18px 16px 18px rgba(12, 20, 14, 0.28));
+
+  will-change: transform, opacity;
+  animation-name: mooseEventSneak;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
+}
+
+@keyframes mooseEventSneak {
+  0% {
+    opacity: 0;
+    transform: translate3d(-105%, 4%, 0) rotate(-5deg);
+  }
+
+  12% {
+    opacity: 0.35;
+  }
+
+  30% {
+    opacity: 1;
+    transform: translate3d(-44%, 1%, 0) rotate(-1.5deg);
+  }
+
+  46% {
+    transform: translate3d(-38%, 0, 0) rotate(1deg);
+  }
+
+  62% {
+    opacity: 1;
+    transform: translate3d(-40%, 0.5%, 0) rotate(-0.5deg);
+  }
+
+  72% {
+    opacity: 1;
+    transform: translate3d(-40%, 0.5%, 0) rotate(-0.5deg);
+  }
+
+  88% {
+    opacity: 0.9;
+    transform: translate3d(-58%, 2%, 0) rotate(-3deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(-110%, 4%, 0) rotate(-6deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moose-event-visitor__image {
+    opacity: 0.92;
+    transform: translate3d(-42%, 0, 0) rotate(-1deg);
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .moose-event-visitor {
+    width: 100vw;
+    height: calc(100vh - 96px);
+  }
+
+  .moose-event-visitor__image {
+    width: 112vw;
+    bottom: -2%;
+  }
+}

@@ -341,3 +341,11 @@
   width: 54px;
   height: 54px;
 }
+
+.event-icon__image {
+  width: 52px;
+  height: 52px;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.28));
+}

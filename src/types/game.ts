@@ -33,6 +33,7 @@ export type Upgrade = {
 export type PermanentUpgrade = {
   id: string;
   name: string;
+  traitLabel?: string;
   icon: string;
   iconSrc?: string;
   cost: number;
@@ -40,6 +41,7 @@ export type PermanentUpgrade = {
   isOwned: boolean;
   requiredCompletedEventId?: string;
   unlockDelayAfterCompletedEventSeconds?: number;
+  requiredKosReached?: number;
   requiredUpgradeLevel?: {
     upgradeId: string;
     level: number;
@@ -68,6 +70,7 @@ export type EventTheme = {
 export type GameEvent = {
   title: string;
   icon: string;
+  iconSrc?: string;
   type: "positive" | "negative";
   durationSeconds: number;
   effectText: string;
@@ -85,6 +88,11 @@ export type GameEvent = {
     durationSeconds: number;
   }[];
 
+  effectTextOverrides?: readonly {
+    permanentUpgradeId: string;
+    effectText: string;
+  }[];
+
   onlyAtNight?: boolean;
   requiredPermanentUpgradeId?: string;
 
@@ -93,6 +101,10 @@ export type GameEvent = {
 
   effects: {
     kosPerSecondBonus?: number;
+    kosPerSecondBonusOverrides?: readonly {
+      permanentUpgradeId: string;
+      kosPerSecondBonus: number;
+    }[];
     kosPerSecondMultiplier?: number;
     directKosChange?: number;
     clickMultiplier?: number;

@@ -21,6 +21,7 @@ type EventTheme = {
 type ActiveEvent = {
   type: "positive" | "negative";
   icon: string;
+  iconSrc?: string;
   title: string;
   effectText: string;
   timeRemaining: number;
@@ -89,7 +90,18 @@ export function EventCard({ isCabinCold, activeEvent }: EventCardProps) {
       <div className="event-label">Hyttestatus</div>
 
       <div className="event-main">
-        <div className="event-icon">{activeEvent.icon}</div>
+        <div className="event-icon">
+          {activeEvent.iconSrc ? (
+            <img
+              className="event-icon__image"
+              src={activeEvent.iconSrc}
+              alt=""
+              aria-hidden="true"
+            />
+          ) : (
+            activeEvent.icon
+          )}
+        </div>
 
         <div className="event-content">
           <h2>{activeEvent.title}</h2>

@@ -4,7 +4,10 @@ import { GAME_BALANCE } from "./gameBalance";
 import peisIcon from "../assets/icons/peis.png";
 import kaffeIcon from "../assets/icons/kaffe.png";
 import stearinlysIcon from "../assets/icons/stearinlys.png";
+import vindulysIcon from "../assets/icons/vindulys.png";
 import hyttehjelperIcon from "../assets/icons/hyttehjelper.png";
+import storPeisIcon from "../assets/icons/storpeis.png";
+import kakaoIcon from "../assets/icons/kakao.png";
 
 export const startingUpgrades: Upgrade[] = [
   {
@@ -21,6 +24,7 @@ export const startingUpgrades: Upgrade[] = [
       permanentUpgradeId: "largeFireplace",
       name: "Stor peis",
       icon: "♨️",
+      iconSrc: storPeisIcon,
       effectText: "Gir mer Kos/sek og gjør 'Knitrende peiskos' hendelse bedre.",
       maxLevel: GAME_BALANCE.upgrades.fireplace.largeFireplaceMaxLevel,
       levelOffset: GAME_BALANCE.upgrades.fireplace.baseMaxLevel,
@@ -44,6 +48,7 @@ export const startingUpgrades: Upgrade[] = [
       permanentUpgradeId: "cocoa",
       name: "Kakao",
       icon: "🍫",
+      iconSrc: kakaoIcon,
       effectText: "Øker Kos per klikk.",
       maxLevel: GAME_BALANCE.upgrades.coffee.cocoaMaxLevel,
       levelOffset: GAME_BALANCE.upgrades.coffee.baseMaxLevel,
@@ -67,6 +72,7 @@ export const startingUpgrades: Upgrade[] = [
       permanentUpgradeId: "windowCandles",
       name: "Vinduslys",
       icon: "🌙🕯️",
+      iconSrc: vindulysIcon,
       effectText: "Gir mer Kos/sek og øker nattbonusen.",
       maxLevel: GAME_BALANCE.upgrades.candle.windowCandlesMaxLevel,
       levelOffset: GAME_BALANCE.upgrades.candle.baseMaxLevel,

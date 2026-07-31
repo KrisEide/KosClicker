@@ -1,3 +1,4 @@
+import { formatKos } from "../../utils/formatKos";
 import "./TopBar.css";
 
 type TopBarProps = {
@@ -7,12 +8,14 @@ type TopBarProps = {
   onDebugAutoClickBurst: () => void;
   kosPerSecondStatus: "normal" | "positive" | "negative";
   kosPerSecondStatusIcon?: string;
+  kosPerSecondStatusIconSrc?: string;
 };
 export function TopBar({
   kos,
   kosPerSecond,
   kosPerSecondStatus,
   kosPerSecondStatusIcon,
+  kosPerSecondStatusIconSrc,
   onDebugAddKos,
   onDebugAutoClickBurst,
 }: TopBarProps) {
@@ -40,15 +43,23 @@ export function TopBar({
       </div>
 
       <p>
-        Kos: <span className="kos-value">{Math.floor(kos)}</span>
+        Kos: <span className="kos-value">{formatKos(kos)}</span>
       </p>
 
       <p className={`kos-per-second kos-per-second--${kosPerSecondStatus}`}>
         Kos/sek:{" "}
         <span className="kos-per-second__value">{kosPerSecond.toFixed(1)}</span>
-        {kosPerSecondStatusIcon && (
+        {(kosPerSecondStatusIconSrc || kosPerSecondStatusIcon) && (
           <span className="kos-per-second__event-icon" aria-hidden="true">
-            {kosPerSecondStatusIcon}
+            {kosPerSecondStatusIconSrc ? (
+              <img
+                className="kos-per-second__event-icon-image"
+                src={kosPerSecondStatusIconSrc}
+                alt=""
+              />
+            ) : (
+              kosPerSecondStatusIcon
+            )}
           </span>
         )}
       </p>

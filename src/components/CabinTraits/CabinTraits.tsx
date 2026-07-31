@@ -27,8 +27,16 @@ export function CabinTraits({ permanentUpgrades }: CabinTraitsProps) {
             className="cabin-traits__item"
             title={upgrade.effectText}
           >
-            <span className="cabin-traits__icon">{upgrade.icon}</span>
-            <span className="cabin-traits__name">{upgrade.name}</span>
+            <span className="cabin-traits__icon">
+              {upgrade.iconSrc ? (
+                <img src={upgrade.iconSrc} alt="" aria-hidden="true" />
+              ) : (
+                upgrade.icon
+              )}
+            </span>
+            <span className="cabin-traits__name">
+              {upgrade.traitLabel ?? upgrade.name}
+            </span>
           </div>
         ))}
       </div>

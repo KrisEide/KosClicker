@@ -1,6 +1,7 @@
 import { useState, type MouseEvent } from "react";
 import cabinImage from "../../assets/Cabin-summer.png";
 import pointerIcon from "../../assets/pointer.png";
+import waffleIcon from "../../assets/icons/vaffel.png";
 import "./CabinArea.css";
 
 type FloatingKos = {
@@ -123,9 +124,12 @@ export function CabinArea({
             }}
             aria-label="Trykk på vaffelen"
           >
-            <span className="waffle-popup__icon" aria-hidden="true">
-              🧇
-            </span>
+            <img
+              className="waffle-popup__icon"
+              src={waffleIcon}
+              alt=""
+              aria-hidden="true"
+            />
           </button>
         )}
       </div>
