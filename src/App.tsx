@@ -22,6 +22,14 @@ type IntroEventStep =
   | "waitingForFirstNight"
   | "waitingForDayAfterFirstNight"
   | "waitingForFirstRain"
+  | "rainActive"
+  | "quietAfterRain"
+  | "waitingForNeighbor"
+  | "neighborActive"
+  | "quietAfterNeighbor"
+  | "waitingForMooseNight"
+  | "mooseActive"
+  | "quietAfterMoose"
   | "done";
 
 type TimeOfDay = "day" | "night";
@@ -78,7 +86,28 @@ function getEventKosPerSecondMultiplier(eventConfig: GameEvent | null): number {
   return eventConfig?.effects.kosPerSecondMultiplier ?? 1;
 }
 
+const DEBUG_MODE_STORAGE_KEY = "cabin-idle-debug-mode";
+
+function getInitialDebugMode(): boolean {
+  const debugParameter = new URLSearchParams(window.location.search).get(
+    "debug",
+  );
+
+  if (debugParameter === "1") {
+    window.localStorage.setItem(DEBUG_MODE_STORAGE_KEY, "1");
+    return true;
+  }
+
+  if (debugParameter === "0") {
+    window.localStorage.removeItem(DEBUG_MODE_STORAGE_KEY);
+    return false;
+  }
+
+  return window.localStorage.getItem(DEBUG_MODE_STORAGE_KEY) === "1";
+}
+
 function App() {
+  const [isDebugMode] = useState(getInitialDebugMode);
   const [kosState, setKosState] = useState<KosState>({
     current: 0,
     highestReached: 0,
@@ -122,9 +151,6 @@ function App() {
 
   const [activeEventId, setActiveEventId] = useState<EventId | null>(null);
   const [eventTimeRemaining, setEventTimeRemaining] = useState(0);
-
-  const [hasStartedNeighborIntroEvent, setHasStartedNeighborIntroEvent] =
-    useState(false);
 
   const [activeWaffle, setActiveWaffle] = useState<ActiveWaffle | null>(null);
   const [waffleBonusTimeRemaining, setWaffleBonusTimeRemaining] = useState(0);
@@ -520,6 +546,15 @@ function App() {
     return true;
   });
 
+  const newPermanentUpgradeIds =
+    introEventStep === "waitingForNeighbor"
+      ? ["waffleIron"]
+      : introEventStep === "quietAfterNeighbor"
+        ? ["screeningHedge"]
+        : introEventStep === "quietAfterMoose"
+          ? ["binoculars"]
+          : [];
+
   function handleCabinClick() {
     setKos((currentKos) => currentKos + kosPerClick);
   }
@@ -703,22 +738,36 @@ function App() {
   //-------------------------------------------
 
   useEffect(() => {
+    if (introEventStep !== "done") return;
     if (activeEventId) return;
+    if (activeWaffle || waffleBonusTimeRemaining > 0) return;
     if (!pendingPriorityEventId) return;
 
     startEvent(pendingPriorityEventId);
     setPendingPriorityEventId(null);
-  }, [activeEventId, pendingPriorityEventId]);
+  }, [
+    activeEventId,
+    activeWaffle,
+    introEventStep,
+    pendingPriorityEventId,
+    waffleBonusTimeRemaining,
+  ]);
 
   useEffect(() => {
     if (!hasUnlockedDayNight) return;
 
-    const isIntroSequenceActive = introEventStep !== "done";
-    const phaseLengthMs = isIntroSequenceActive
-      ? GAME_BALANCE.dayNightCycle.introPhaseLengthMs
-      : timeOfDay === "day"
-        ? GAME_BALANCE.dayNightCycle.dayLengthMs
-        : GAME_BALANCE.dayNightCycle.nightLengthMs;
+    const isOpeningDayNightCycle =
+      introEventStep === "waitingForFirstNight" ||
+      introEventStep === "waitingForDayAfterFirstNight";
+
+    if (!isOpeningDayNightCycle && introEventStep !== "done") return;
+
+    const phaseLengthMs =
+      introEventStep === "done"
+        ? timeOfDay === "day"
+          ? GAME_BALANCE.dayNightCycle.dayLengthMs
+          : GAME_BALANCE.dayNightCycle.nightLengthMs
+        : GAME_BALANCE.dayNightCycle.introPhaseLengthMs;
 
     const phaseTimer = setTimeout(() => {
       setTimeOfDay((currentTime) => (currentTime === "day" ? "night" : "day"));
@@ -773,7 +822,7 @@ function App() {
 
     const firstRainTimer = setTimeout(() => {
       startEvent("rain");
-      setIntroEventStep("done");
+      setIntroEventStep("rainActive");
     }, GAME_BALANCE.events.rain.firstStartDelayAfterDaySeconds * 1000);
 
     return () => clearTimeout(firstRainTimer);
@@ -828,7 +877,9 @@ function App() {
   // -------------------- RANDOM VAFFEL TIMER. Start
 
   useEffect(() => {
+    if (introEventStep !== "done") return;
     if (waffleLevel <= 0) return;
+    if (activeEventId) return;
     if (activeWaffle) return;
 
     const minDelaySeconds =
@@ -861,7 +912,7 @@ function App() {
     }, randomDelaySeconds * 1000);
 
     return () => clearTimeout(waffleSpawnTimer);
-  }, [waffleLevel, activeWaffle]);
+  }, [activeEventId, activeWaffle, introEventStep, waffleLevel]);
 
   useEffect(() => {
     if (!activeWaffle) return;
@@ -903,9 +954,24 @@ function App() {
 
       setLastEventId(completedEventId);
 
-      if (completedEventId === "neighborSmallTalk") {
-        setIsRandomEventsUnlocked(true);
-      }
+      setIntroEventStep((currentStep) => {
+        if (completedEventId === "rain" && currentStep === "rainActive") {
+          return "quietAfterRain";
+        }
+
+        if (
+          completedEventId === "neighborSmallTalk" &&
+          currentStep === "neighborActive"
+        ) {
+          return "quietAfterNeighbor";
+        }
+
+        if (completedEventId === "moose" && currentStep === "mooseActive") {
+          return "quietAfterMoose";
+        }
+
+        return currentStep;
+      });
 
       setActiveEventId(null);
       return;
@@ -948,6 +1014,14 @@ function App() {
 
           return [...currentIds, upgrade.id];
         });
+
+        if (upgrade.id === "waffleIron") {
+          setIntroEventStep((currentStep) =>
+            currentStep === "quietAfterRain"
+              ? "waitingForNeighbor"
+              : currentStep,
+          );
+        }
       }, upgrade.unlockDelayAfterCompletedEventSeconds * 1000);
 
       permanentUnlockTimersRef.current.push(unlockTimer);
@@ -955,17 +1029,54 @@ function App() {
   }, [completedEventIds, delayedPermanentUpgradeIds, permanentUpgrades]);
 
   useEffect(() => {
+    if (introEventStep !== "waitingForNeighbor") return;
     if (!hasWaffleIronAppeared) return;
-    if (hasStartedNeighborIntroEvent) return;
     if (activeEventId) return;
 
     const neighborIntroTimer = setTimeout(() => {
       startEvent("neighborSmallTalk");
-      setHasStartedNeighborIntroEvent(true);
+      setIntroEventStep("neighborActive");
     }, GAME_BALANCE.events.neighborSmallTalk.firstStartDelayAfterWaffleIronAppearsSeconds * 1000);
 
     return () => clearTimeout(neighborIntroTimer);
-  }, [hasWaffleIronAppeared, hasStartedNeighborIntroEvent, activeEventId]);
+  }, [activeEventId, hasWaffleIronAppeared, introEventStep]);
+
+  useEffect(() => {
+    if (introEventStep !== "quietAfterNeighbor") return;
+    if (activeEventId) return;
+
+    const nightTimer = setTimeout(() => {
+      setTimeOfDay("night");
+      setIntroEventStep("waitingForMooseNight");
+    }, GAME_BALANCE.introSequence.nightDelayAfterNeighborSeconds * 1000);
+
+    return () => clearTimeout(nightTimer);
+  }, [activeEventId, introEventStep]);
+
+  useEffect(() => {
+    if (introEventStep !== "waitingForMooseNight") return;
+    if (timeOfDay !== "night") return;
+    if (activeEventId) return;
+
+    const mooseIntroTimer = setTimeout(() => {
+      startEvent("moose");
+      setIntroEventStep("mooseActive");
+    }, GAME_BALANCE.introSequence.mooseStartDelayAfterNightSeconds * 1000);
+
+    return () => clearTimeout(mooseIntroTimer);
+  }, [activeEventId, introEventStep, timeOfDay]);
+
+  useEffect(() => {
+    if (introEventStep !== "quietAfterMoose") return;
+    if (activeEventId) return;
+
+    const finishIntroTimer = setTimeout(() => {
+      setIntroEventStep("done");
+      setIsRandomEventsUnlocked(true);
+    }, GAME_BALANCE.introSequence.normalEventsDelayAfterMooseSeconds * 1000);
+
+    return () => clearTimeout(finishIntroTimer);
+  }, [activeEventId, introEventStep]);
 
   const activeEvent = activeEventConfig
     ? {
@@ -1020,6 +1131,7 @@ function App() {
   useEffect(() => {
     if (!isRandomEventsUnlocked) return;
     if (activeEventId) return;
+    if (activeWaffle || waffleBonusTimeRemaining > 0) return;
     if (pendingPriorityEventId) return;
 
     const randomDelaySeconds =
@@ -1048,9 +1160,11 @@ function App() {
   }, [
     isRandomEventsUnlocked,
     activeEventId,
+    activeWaffle,
     pendingPriorityEventId,
     lastEventId,
     permanentUpgrades,
+    waffleBonusTimeRemaining,
   ]);
 
   useEffect(() => {
@@ -1070,6 +1184,7 @@ function App() {
       <TopBar
         kos={kos}
         kosPerSecond={kosPerSecond}
+        showDebugControls={isDebugMode}
         kosPerSecondStatus={kosPerSecondStatus}
         kosPerSecondStatusIcon={kosPerSecondStatusIcon}
         kosPerSecondStatusIconSrc={kosPerSecondStatusIconSrc}
@@ -1116,6 +1231,7 @@ function App() {
           kos={kos}
           onBuyUpgrade={handleBuyUpgrade}
           permanentUpgrades={visiblePermanentUpgrades}
+          newPermanentUpgradeIds={newPermanentUpgradeIds}
           onBuyPermanentUpgrade={handleBuyPermanentUpgrade}
           showPermanentUpgrades={visiblePermanentUpgrades.length > 0}
         />

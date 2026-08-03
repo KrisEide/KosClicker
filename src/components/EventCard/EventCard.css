@@ -1,12 +1,16 @@
 .event-card {
   width: 520px;
   max-width: 100%;
-  margin-top: 18px;
+  margin-top: 8px;
   padding: 14px 20px 12px;
   border: 2px solid rgba(125, 160, 184, 0.38);
   border-radius: 14px;
   background: rgba(223, 238, 247, 0.96);
   box-shadow: 0 10px 22px rgba(24, 50, 71, 0.1);
+}
+
+.cabin-traits + .event-card {
+  margin-top: 18px;
 }
 
 .event-card--positive {

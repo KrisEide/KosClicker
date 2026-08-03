@@ -14,6 +14,11 @@ export const GAME_BALANCE = {
     dayLengthMs: 180_000,
     nightLengthMs: 120_000,
   },
+  introSequence: {
+    nightDelayAfterNeighborSeconds: 30,
+    mooseStartDelayAfterNightSeconds: 8,
+    normalEventsDelayAfterMooseSeconds: 20,
+  },
   nightBonus: 0.15,
 
   autoClickBurst: {
@@ -80,7 +85,7 @@ export const GAME_BALANCE = {
           durationSeconds: 25,
         },
       ],
-      firstStartDelayAfterWaffleIronAppearsSeconds: 20,
+      firstStartDelayAfterWaffleIronAppearsSeconds: 30,
       effectText: "-100% Kos/sek",
       flavorText:
         "Naboen har sett røyk fra pipa og vil bare slå av en liten prat. Det blir aldri en liten prat.",
@@ -292,7 +297,7 @@ export const GAME_BALANCE = {
 
     waffleIron: {
       cost: 4000,
-      unlockDelayAfterRainSeconds: 15,
+      unlockDelayAfterRainSeconds: 20,
     },
 
     screeningHedge: {

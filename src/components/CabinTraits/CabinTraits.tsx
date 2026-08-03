@@ -25,7 +25,8 @@ export function CabinTraits({ permanentUpgrades }: CabinTraitsProps) {
           <div
             key={upgrade.id}
             className="cabin-traits__item"
-            title={upgrade.effectText}
+            title={`${upgrade.traitLabel ?? upgrade.name}: ${upgrade.effectText}`}
+            aria-label={`${upgrade.traitLabel ?? upgrade.name}. ${upgrade.effectText}`}
           >
             <span className="cabin-traits__icon">
               {upgrade.iconSrc ? (
@@ -33,9 +34,6 @@ export function CabinTraits({ permanentUpgrades }: CabinTraitsProps) {
               ) : (
                 upgrade.icon
               )}
-            </span>
-            <span className="cabin-traits__name">
-              {upgrade.traitLabel ?? upgrade.name}
             </span>
           </div>
         ))}

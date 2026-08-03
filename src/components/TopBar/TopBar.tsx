@@ -4,6 +4,7 @@ import "./TopBar.css";
 type TopBarProps = {
   kos: number;
   kosPerSecond: number;
+  showDebugControls: boolean;
   onDebugAddKos: () => void;
   onDebugAutoClickBurst: () => void;
   kosPerSecondStatus: "normal" | "positive" | "negative";
@@ -13,6 +14,7 @@ type TopBarProps = {
 export function TopBar({
   kos,
   kosPerSecond,
+  showDebugControls,
   kosPerSecondStatus,
   kosPerSecondStatusIcon,
   kosPerSecondStatusIconSrc,
@@ -24,23 +26,25 @@ export function TopBar({
       <div className="title-block">
         <h1>Kos Clicker</h1>
       </div>
-      <div className="debug-buttons">
-        <button
-          className="debug-kos-button"
-          type="button"
-          onClick={onDebugAddKos}
-        >
-          +1000 Kos
-        </button>
+      {showDebugControls && (
+        <div className="debug-buttons">
+          <button
+            className="debug-kos-button"
+            type="button"
+            onClick={onDebugAddKos}
+          >
+            +1000 Kos
+          </button>
 
-        <button
-          className="debug-kos-button"
-          type="button"
-          onClick={onDebugAutoClickBurst}
-        >
-          10 museklikk
-        </button>
-      </div>
+          <button
+            className="debug-kos-button"
+            type="button"
+            onClick={onDebugAutoClickBurst}
+          >
+            10 museklikk
+          </button>
+        </div>
+      )}
 
       <p>
         Kos: <span className="kos-value">{formatKos(kos)}</span>

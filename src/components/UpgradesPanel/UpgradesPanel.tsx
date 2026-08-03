@@ -1,3 +1,4 @@
+import { useCallback, useRef, useState } from "react";
 import type { PermanentUpgrade, Upgrade } from "../../types/game";
 import { formatKos } from "../../utils/formatKos";
 
@@ -21,6 +22,7 @@ type UpgradesPanelProps = {
   onBuyUpgrade: (upgradeId: string) => void;
   showPermanentUpgrades: boolean;
   permanentUpgrades: PermanentUpgrade[];
+  newPermanentUpgradeIds: string[];
   onBuyPermanentUpgrade: (upgradeId: string) => void;
 };
 
@@ -30,10 +32,54 @@ export function UpgradesPanel({
   onBuyUpgrade,
   showPermanentUpgrades,
   permanentUpgrades,
+  newPermanentUpgradeIds,
   onBuyPermanentUpgrade,
 }: UpgradesPanelProps) {
+  const permanentListRef = useRef<HTMLDivElement | null>(null);
+  const [hoveredPermanentUpgrade, setHoveredPermanentUpgrade] =
+    useState<PermanentUpgrade | null>(null);
+  const [permanentScrollHints, setPermanentScrollHints] = useState({
+    top: false,
+    bottom: false,
+  });
+
   const availablePermanentUpgrades = permanentUpgrades.filter(
     (upgrade) => !upgrade.isOwned,
+  );
+
+  const updatePermanentScrollHints = useCallback(() => {
+    const list = permanentListRef.current;
+
+    if (!list) {
+      return;
+    }
+
+    const nextHints = {
+      top: list.scrollTop > 2,
+      bottom: list.scrollTop + list.clientHeight < list.scrollHeight - 2,
+    };
+
+    setPermanentScrollHints((currentHints) =>
+      currentHints.top === nextHints.top &&
+      currentHints.bottom === nextHints.bottom
+        ? currentHints
+        : nextHints,
+    );
+  }, []);
+
+  const setPermanentListNode = useCallback(
+    (node: HTMLDivElement | null) => {
+      permanentListRef.current = node;
+
+      if (!node) {
+        return;
+      }
+
+      if (availablePermanentUpgrades.length > 0) {
+        requestAnimationFrame(updatePermanentScrollHints);
+      }
+    },
+    [availablePermanentUpgrades.length, updatePermanentScrollHints],
   );
 
   return (
@@ -110,70 +156,100 @@ export function UpgradesPanel({
             <p>Permanente forbedringer av hytta</p>
           </header>
 
-          <div className="permanent-list">
-            {availablePermanentUpgrades.map((upgrade) => {
-              const canAfford = kos >= upgrade.cost;
+          <div
+            className={`permanent-list-shell ${
+              permanentScrollHints.top
+                ? "permanent-list-shell--more-above"
+                : ""
+            } ${
+              permanentScrollHints.bottom
+                ? "permanent-list-shell--more-below"
+                : ""
+            }`}
+          >
+            <div
+              ref={setPermanentListNode}
+              className="permanent-list"
+              onScroll={updatePermanentScrollHints}
+            >
+              {availablePermanentUpgrades.map((upgrade) => {
+                const canAfford = kos >= upgrade.cost;
 
-              return (
-                <button
-                  key={upgrade.id}
-                  className="permanent-card"
-                  type="button"
-                  onClick={() => onBuyPermanentUpgrade(upgrade.id)}
-                  disabled={!canAfford}
-                  aria-label={`${upgrade.name}. ${upgrade.effectText} ${formatKos(
-                    upgrade.cost,
-                  )} Kos`}
-                >
-                  <span className="permanent-icon">
-                    {upgrade.iconSrc ? (
-                      <img
-                        className="permanent-icon__image"
-                        src={upgrade.iconSrc}
-                        alt=""
-                        aria-hidden="true"
-                      />
-                    ) : (
-                      upgrade.icon
-                    )}
-                  </span>
-
-                  <span className="permanent-info">
-                    <span className="permanent-name">{upgrade.name}</span>
-                    <span className="permanent-description">
-                      {PERMANENT_UPGRADE_SUMMARIES[upgrade.id] ??
-                        "Se full effekt"}
-                    </span>
-                  </span>
-
-                  <span
-                    className={`permanent-cost ${
-                      canAfford ? "" : "permanent-cost--locked"
-                    }`}
+                return (
+                  <button
+                    key={upgrade.id}
+                    className="permanent-card"
+                    type="button"
+                    onClick={() => onBuyPermanentUpgrade(upgrade.id)}
+                    onPointerEnter={() => setHoveredPermanentUpgrade(upgrade)}
+                    onPointerLeave={() => setHoveredPermanentUpgrade(null)}
+                    onFocus={() => setHoveredPermanentUpgrade(upgrade)}
+                    onBlur={() => setHoveredPermanentUpgrade(null)}
+                    disabled={!canAfford}
+                    aria-label={`${upgrade.name}. ${upgrade.effectText} ${formatKos(
+                      upgrade.cost,
+                    )} Kos`}
                   >
-                    {!canAfford && (
-                      <span className="permanent-cost__lock" aria-hidden="true">
-                        🔒
-                      </span>
-                    )}
-                    {formatKos(upgrade.cost)} Kos
-                  </span>
-
-                  <span className="permanent-tooltip">
-                    <span className="permanent-tooltip__label">Full effekt</span>
-                    <span className="permanent-tooltip__effect">
-                      {upgrade.effectText}
+                    <span className="permanent-icon">
+                      {upgrade.iconSrc ? (
+                        <img
+                          className="permanent-icon__image"
+                          src={upgrade.iconSrc}
+                          alt=""
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        upgrade.icon
+                      )}
                     </span>
-                    {upgrade.flavorText && (
-                      <span className="permanent-tooltip__flavor">
-                        “{upgrade.flavorText}”
+
+                    <span className="permanent-info">
+                      <span className="permanent-name-line">
+                        <span className="permanent-name">{upgrade.name}</span>
+                        {newPermanentUpgradeIds.includes(upgrade.id) && (
+                          <span className="permanent-new-badge">NY!</span>
+                        )}
                       </span>
-                    )}
-                  </span>
-                </button>
-              );
-            })}
+                      <span className="permanent-description">
+                        {PERMANENT_UPGRADE_SUMMARIES[upgrade.id] ??
+                          "Se full effekt"}
+                      </span>
+                    </span>
+
+                    <span
+                      className={`permanent-cost ${
+                        canAfford ? "" : "permanent-cost--locked"
+                      }`}
+                    >
+                      {!canAfford && (
+                        <span
+                          className="permanent-cost__lock"
+                          aria-hidden="true"
+                        >
+                          🔒
+                        </span>
+                      )}
+                      {formatKos(upgrade.cost)} Kos
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
+
+          {hoveredPermanentUpgrade && (
+            <span className="permanent-tooltip permanent-tooltip--detached">
+              <span className="permanent-tooltip__label">Full effekt</span>
+              <span className="permanent-tooltip__effect">
+                {hoveredPermanentUpgrade.effectText}
+              </span>
+              {hoveredPermanentUpgrade.flavorText && (
+                <span className="permanent-tooltip__flavor">
+                  “{hoveredPermanentUpgrade.flavorText}”
+                </span>
+              )}
+            </span>
+          )}
         </section>
       )}
     </aside>

@@ -1,47 +1,50 @@
 .cabin-traits {
   width: min(700px, 100%);
   box-sizing: border-box;
+  position: relative;
+  z-index: 30;
 
-  margin-top: -80px;
-  margin-bottom: 18px;
+  margin-top: -98px;
+  margin-bottom: 4px;
 
-  padding: 0 16px;
+  padding: 0 12px;
 
   transform: none;
 
   color: #193149;
+  pointer-events: none;
 }
 
 .cabin-traits h2 {
-  margin: 0 0 6px;
-  font-size: 1.35rem;
+  margin: 0 0 4px;
+  font-size: 1.25rem;
   line-height: 1.1;
   font-weight: 800;
   color: #193149;
 }
 
 .cabin-traits__list {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  align-items: start;
-  gap: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .cabin-traits__item {
-  min-width: 0;
-  width: 100%;
+  flex: 0 0 38px;
 
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
 
   text-align: center;
+  pointer-events: auto;
 }
 
 .cabin-traits__icon {
-  width: 48px;
-  height: 48px;
+  width: 38px;
+  height: 38px;
 
   display: flex;
   align-items: center;
@@ -55,29 +58,9 @@
   display: block;
 }
 
-.cabin-traits__name {
-  width: 100%;
-  min-width: 0;
-  padding: 0 2px;
-
-  font-size: 0.74rem;
-  line-height: 1.05;
-  font-weight: 700;
-  color: #43586b;
-
-  text-align: center;
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
-
 .game--night .cabin-traits h2 {
   color: #f7f2e8;
   text-shadow:
     0 1px 0 rgba(0, 0, 0, 0.35),
     0 0 8px rgba(255, 214, 140, 0.08);
-}
-
-.game--night .cabin-traits__name {
-  color: #f1e7d2;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
 }
