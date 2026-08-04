@@ -17,6 +17,21 @@
   margin: 0;
   font-size: 3.4rem;
   font-weight: 500;
+  line-height: 0.95;
+}
+
+.top-bar .game-credit {
+  margin-top: 5px;
+  color: rgba(70, 100, 74, 0.76);
+  font-size: 0.78rem;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: left;
+}
+
+.game--night .top-bar .game-credit {
+  color: rgba(217, 237, 199, 0.7);
 }
 
 .top-bar p {

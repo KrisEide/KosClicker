@@ -25,6 +25,7 @@ export function TopBar({
     <header className="top-bar">
       <div className="title-block">
         <h1>Kos Clicker</h1>
+        <p className="game-credit">Et spill av Kristoffer Eide</p>
       </div>
       {showDebugControls && (
         <div className="debug-buttons">
