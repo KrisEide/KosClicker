@@ -5,8 +5,6 @@ import storPeisIcon from "../assets/icons/storpeis.png";
 import hekkIcon from "../assets/icons/hekk.png";
 import kakaoIcon from "../assets/icons/kakao.png";
 import trollIcon from "../assets/icons/troll.png";
-import vindulysIcon from "../assets/icons/vindulys.png";
-import kikkertIcon from "../assets/icons/kikkert.png";
 
 import { GAME_BALANCE } from "./gameBalance";
 
@@ -41,7 +39,7 @@ export const permanentUpgrades: PermanentUpgrade[] = [
 
   {
     id: "screeningHedge",
-    name: "Hekk",
+    name: "hekk",
     traitLabel: "Hekk",
     icon: "🌿",
     iconSrc: hekkIcon,
@@ -57,7 +55,6 @@ export const permanentUpgrades: PermanentUpgrade[] = [
     name: "Vinduslys",
     traitLabel: "Vinduslys",
     icon: "🌙",
-    iconSrc: vindulysIcon,
     cost: GAME_BALANCE.permanentUpgrades.windowCandles.cost,
     effectText: "Oppgraderer stearinlys og gjør nattbonusen sterkere.",
     flavorText: "Et lite lys i vinduet gjør mørket utenfor hyggeligere.",
@@ -118,7 +115,7 @@ export const permanentUpgrades: PermanentUpgrade[] = [
   },
   {
     id: "troll",
-    name: "Troll figur",
+    name: "Trollfigur",
     traitLabel: "Troll",
     icon: "🧌",
     iconSrc: trollIcon,
@@ -126,17 +123,5 @@ export const permanentUpgrades: PermanentUpgrade[] = [
     effectText: "Har ingen effekt ennå.",
     isOwned: false,
     requiredKosReached: GAME_BALANCE.permanentUpgrades.troll.unlockKos,
-  },
-  {
-    id: "binoculars",
-    name: "Kikkert",
-    traitLabel: "Kikkert",
-    icon: "🔭",
-    iconSrc: kikkertIcon,
-    cost: GAME_BALANCE.permanentUpgrades.binoculars.cost,
-    effectText:
-      "Elg-eventen går fra 40 til 60 sekunder og fra +60% til +80% Kos/sek.",
-    isOwned: false,
-    requiredCompletedEventId: "moose",
   },
 ];
