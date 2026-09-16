@@ -5,6 +5,7 @@ import storPeisIcon from "../assets/icons/storpeis.png";
 import hekkIcon from "../assets/icons/hekk.png";
 import kakaoIcon from "../assets/icons/kakao.png";
 import trollIcon from "../assets/icons/troll.png";
+import kikkertIcon from "../assets/icons/kikkert.png";
 
 import { GAME_BALANCE } from "./gameBalance";
 
@@ -16,7 +17,7 @@ export const permanentUpgrades: PermanentUpgrade[] = [
     icon: "🪟",
     iconSrc: storeVinduerIcon,
     cost: GAME_BALANCE.permanentUpgrades.storeWindows.cost,
-    effectText: "'Regn ute' bonus går fra +30% til +60% Kos/sek.",
+    effectText: "'Regn ute' bonus går fra +50% til +100% Kos/sek.",
     flavorText: "Jo større vinduer, jo mer kos blir det av dårlig vær.",
     isOwned: false,
     requiredCompletedEventId: "rain",
@@ -48,6 +49,20 @@ export const permanentUpgrades: PermanentUpgrade[] = [
     flavorText: "Du er ikke interessert i å diskutere vedpriser med naboen.",
     isOwned: false,
     requiredCompletedEventId: "neighborSmallTalk",
+  },
+
+  {
+    id: "binoculars",
+    name: "Kikkert",
+    traitLabel: "Kikkert",
+    icon: "🔭",
+    iconSrc: kikkertIcon,
+    cost: GAME_BALANCE.permanentUpgrades.binoculars.cost,
+    effectText:
+      "'Elg utenfor hytta' gir +200% Kos/sek og varer 20 sekunder lenger.",
+    flavorText: "Med kikkert kan du nyte synet litt lenger.",
+    isOwned: false,
+    requiredCompletedEventId: "moose",
   },
 
   {

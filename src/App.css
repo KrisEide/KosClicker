@@ -83,13 +83,14 @@
 
 .game--waffle-bonus {
   position: relative;
+  isolation: isolate;
 }
 
 .game--waffle-bonus::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: -1;
 
   pointer-events: none;
 
@@ -122,7 +123,13 @@
       circle at 50% 48%,
       rgba(255, 222, 128, 0.035),
       transparent 34%
-    );
+    ),
+    url("./assets/icons/vaffelduk.webp");
+
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
+    repeat;
+  background-size: auto, auto, auto, auto, auto, 420px 420px;
+  background-position: center, center, center, center, center, top left;
 
   animation: waffleBonusGoldGlow 4.5s ease-in-out infinite;
 }
@@ -130,12 +137,12 @@
 @keyframes waffleBonusGoldGlow {
   0%,
   100% {
-    opacity: 0.55;
+    opacity: 0.52;
     filter: saturate(1.15);
   }
 
   50% {
-    opacity: 0.82;
+    opacity: 0.68;
     filter: saturate(1.35);
   }
 }

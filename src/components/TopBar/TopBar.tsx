@@ -7,6 +7,7 @@ type TopBarProps = {
   showDebugControls: boolean;
   onDebugAddKos: () => void;
   onDebugAutoClickBurst: () => void;
+  onDebugSpawnWaffle: () => void;
   kosPerSecondStatus: "normal" | "positive" | "negative";
   kosPerSecondStatusIcon?: string;
   kosPerSecondStatusIconSrc?: string;
@@ -20,6 +21,7 @@ export function TopBar({
   kosPerSecondStatusIconSrc,
   onDebugAddKos,
   onDebugAutoClickBurst,
+  onDebugSpawnWaffle,
 }: TopBarProps) {
   return (
     <header className="top-bar">
@@ -43,6 +45,14 @@ export function TopBar({
             onClick={onDebugAutoClickBurst}
           >
             10 museklikk
+          </button>
+
+          <button
+            className="debug-kos-button"
+            type="button"
+            onClick={onDebugSpawnWaffle}
+          >
+            Spawn vaffel
           </button>
         </div>
       )}

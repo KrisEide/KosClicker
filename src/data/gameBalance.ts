@@ -46,9 +46,9 @@ export const GAME_BALANCE = {
       randomWeight: 35,
       durationSeconds: 70,
       firstStartDelayAfterDaySeconds: 10,
-      effectText: "+30% Kos/sek",
+      effectText: "+50% Kos/sek",
       effects: {
-        kosPerSecondBonus: 0.3,
+        kosPerSecondBonus: 0.5,
       },
       theme: {
         borderColor: "rgba(75, 125, 155, 0.26)",
@@ -195,19 +195,19 @@ export const GAME_BALANCE = {
         },
       ],
       onlyAtNight: true,
-      effectText: "+60% Kos/sek",
+      effectText: "+150% Kos/sek",
       effectTextOverrides: [
         {
           permanentUpgradeId: "binoculars",
-          effectText: "+80% Kos/sek",
+          effectText: "+200% Kos/sek",
         },
       ],
       effects: {
-        kosPerSecondBonus: 0.6,
+        kosPerSecondBonus: 1.5,
         kosPerSecondBonusOverrides: [
           {
             permanentUpgradeId: "binoculars",
-            kosPerSecondBonus: 0.8,
+            kosPerSecondBonus: 2,
           },
         ],
       },
@@ -292,7 +292,7 @@ export const GAME_BALANCE = {
   permanentUpgrades: {
     storeWindows: {
       cost: 18000,
-      rainKosPerSecondBonusIncrease: 0.3,
+      rainKosPerSecondBonusIncrease: 0.5,
     },
 
     waffleIron: {
@@ -385,7 +385,7 @@ export const GAME_BALANCE = {
       ],
     },
     cabinHelper: {
-      levelCosts: [400, 750, 1300, 2200, 3600, 4500, 6500, 10000, 14000, 23000],
+      levelCosts: [400, 750, 1300, 2200, 3600, 4500, 6500, 10000, 16000, 35000],
 
       intervalMs: 2_000,
 
@@ -400,11 +400,16 @@ export const GAME_BALANCE = {
         700, 2500, 3000, 4500, 8000, 10500, 15000, 27000, 35000, 45000,
       ],
 
-      minSpawnDelaySecondsByLevel: [60, 60, 60, 60, 60, 60, 60, 60, 60, 60],
+      minSpawnDelaySecondsByLevel: [
+        240, 230, 220, 210, 200, 195, 190, 185, 180, 180,
+      ],
 
       maxSpawnDelaySecondsByLevel: [
-        420, 390, 360, 330, 300, 280, 260, 250, 245, 240,
+        600, 570, 540, 510, 480, 465, 450, 440, 430, 420,
       ],
+
+      appearanceDelayMinSeconds: 5,
+      appearanceDelayMaxSeconds: 10,
 
       visibleSeconds: 15,
 

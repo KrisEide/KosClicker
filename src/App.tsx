@@ -155,6 +155,7 @@ function App() {
   const [activeWaffle, setActiveWaffle] = useState<ActiveWaffle | null>(null);
   const [waffleBonusTimeRemaining, setWaffleBonusTimeRemaining] = useState(0);
   const nextWaffleIdRef = useRef(0);
+  const nextWaffleSpawnAtRef = useRef<number | null>(null);
 
   const [autoClickers, setAutoClickers] = useState<AutoClicker[]>([]);
   const autoClickTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -630,6 +631,23 @@ function App() {
     runAutoClickSequence(GAME_BALANCE.autoClickBurst.count, kosPerClick);
   }
 
+  function handleDebugSpawnWaffle() {
+    setActiveWaffle({
+      id: nextWaffleIdRef.current,
+      xPercent: getRandomPercent(
+        GAME_BALANCE.upgrades.waffle.xMinPercent,
+        GAME_BALANCE.upgrades.waffle.xMaxPercent,
+      ),
+      yPercent: getRandomPercent(
+        GAME_BALANCE.upgrades.waffle.yMinPercent,
+        GAME_BALANCE.upgrades.waffle.yMaxPercent,
+      ),
+    });
+
+    nextWaffleIdRef.current += 1;
+    nextWaffleSpawnAtRef.current = null;
+  }
+
   function handleBuyUpgrade(upgradeId: string) {
     const upgrade = upgrades.find(
       (currentUpgrade) => currentUpgrade.id === upgradeId,
@@ -879,21 +897,34 @@ function App() {
   useEffect(() => {
     if (introEventStep !== "done") return;
     if (waffleLevel <= 0) return;
-    if (activeEventId) return;
     if (activeWaffle) return;
 
-    const minDelaySeconds =
-      GAME_BALANCE.upgrades.waffle.minSpawnDelaySecondsByLevel[
-        waffleLevel - 1
-      ] ?? 60;
+    if (nextWaffleSpawnAtRef.current === null) {
+      const minDelaySeconds =
+        GAME_BALANCE.upgrades.waffle.minSpawnDelaySecondsByLevel[
+          waffleLevel - 1
+        ] ?? 240;
 
-    const maxDelaySeconds =
-      GAME_BALANCE.upgrades.waffle.maxSpawnDelaySecondsByLevel[
-        waffleLevel - 1
-      ] ?? 420;
+      const maxDelaySeconds =
+        GAME_BALANCE.upgrades.waffle.maxSpawnDelaySecondsByLevel[
+          waffleLevel - 1
+        ] ?? 600;
 
-    const randomDelaySeconds =
-      Math.random() * (maxDelaySeconds - minDelaySeconds) + minDelaySeconds;
+      const randomDelaySeconds =
+        Math.random() * (maxDelaySeconds - minDelaySeconds) + minDelaySeconds;
+      const appearanceDelaySeconds = getRandomPercent(
+        GAME_BALANCE.upgrades.waffle.appearanceDelayMinSeconds,
+        GAME_BALANCE.upgrades.waffle.appearanceDelayMaxSeconds,
+      );
+
+      nextWaffleSpawnAtRef.current =
+        Date.now() + (randomDelaySeconds + appearanceDelaySeconds) * 1000;
+    }
+
+    const timeUntilSpawn = Math.max(
+      nextWaffleSpawnAtRef.current - Date.now(),
+      0,
+    );
 
     const waffleSpawnTimer = setTimeout(() => {
       setActiveWaffle({
@@ -909,10 +940,11 @@ function App() {
       });
 
       nextWaffleIdRef.current += 1;
-    }, randomDelaySeconds * 1000);
+      nextWaffleSpawnAtRef.current = null;
+    }, timeUntilSpawn);
 
     return () => clearTimeout(waffleSpawnTimer);
-  }, [activeEventId, activeWaffle, introEventStep, waffleLevel]);
+  }, [activeWaffle, introEventStep, waffleLevel]);
 
   useEffect(() => {
     if (!activeWaffle) return;
@@ -1190,6 +1222,7 @@ function App() {
         kosPerSecondStatusIconSrc={kosPerSecondStatusIconSrc}
         onDebugAddKos={handleDebugAddKos}
         onDebugAutoClickBurst={handleDebugAutoClickBurst}
+        onDebugSpawnWaffle={handleDebugSpawnWaffle}
       />
 
       {activeEventId === "moose" && (
